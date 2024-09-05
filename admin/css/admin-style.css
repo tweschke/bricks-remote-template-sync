@@ -1,0 +1,182 @@
+/* Base styles */
+.bricks-importer {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    line-height: 1.6;
+    color: #333;
+    margin: 20px 20px 20px 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+/* Section styles */
+.bricks-importer .bricks-section {
+    background-color: #ffffff;
+    padding: 30px;
+    margin-bottom: 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 1200px;
+    box-sizing: border-box;
+}
+
+/* Heading styles */
+.bricks-importer h1 {
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.bricks-importer h2 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-left: 4px solid #3498db;
+    padding-left: 10px;
+    font-size: 1.25em;
+}
+
+/* Form styles */
+.bricks-importer .bricks-section form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.bricks-importer .bricks-section input[type="file"],
+.bricks-importer .bricks-section input[type="url"] {
+    margin-bottom: 15px;
+    padding: 10px;
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+/* Button styles */
+.bricks-importer .bricks-section button,
+.bricks-importer .bricks-section .button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding: 8px 15px;
+    min-width: 150px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.bricks-importer .bricks-section .button-primary {
+    background-color: #3498db;
+    border-color: #2980b9;
+    color: #fff;
+}
+
+.bricks-importer .bricks-section .button-primary:hover {
+    background-color: #2980b9;
+}
+
+.bricks-importer .bricks-section .button-secondary {
+    background-color: #e74c3c;
+    border-color: #c0392b;
+    color: #fff;
+}
+
+.bricks-importer .bricks-section .button-secondary:hover {
+    background-color: #c0392b;
+}
+
+/* Message styles */
+.bricks-importer .updated,
+.bricks-importer .error {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 3px;
+}
+
+.bricks-importer .updated {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.bricks-importer .error {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+/* Styles for read-me and changelog */
+.bricks-docs {
+    max-width: 1200px;
+    margin: 20px 20px 20px 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+.bricks-docs .container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.bricks-docs h1 {
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    color: #2c3e50;
+}
+
+.bricks-docs h2 {
+    margin-top: 30px;
+    border-left: 4px solid #3498db;
+    padding-left: 10px;
+    color: #2c3e50;
+}
+
+.bricks-docs ol, .bricks-docs ul {
+    padding-left: 20px;
+}
+
+.bricks-docs li {
+    margin-bottom: 10px;
+}
+
+.bricks-docs a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.bricks-docs a:hover {
+    text-decoration: underline;
+}
+
+.bricks-docs pre {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 10px;
+    overflow-x: auto;
+}
+
+.bricks-docs .warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 3px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.bricks-docs .version {
+    background-color: #e9f3fe;
+    border-radius: 3px;
+    padding: 5px 10px;
+    font-weight: bold;
+    color: #3498db;
+}
+
+.bricks-docs .new { color: #27ae60; }
+.bricks-docs .fix { color: #e74c3c; }
+.bricks-docs .update { color: #f39c12; }
