@@ -60,6 +60,7 @@ function client_plugin_license_notice() {
     <div class="notice notice-error">
         <p>Your Bricks Remote Template Sync license is not active or has expired. Please <a href="<?php echo admin_url('admin.php?page=bb-license'); ?>">check your license</a> to continue using the plugin.</p>
     </div>
+    <?php
 }
 
 function handle_license_form_submission() {
