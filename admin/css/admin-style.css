@@ -180,3 +180,13 @@
 .bricks-docs .new { color: #27ae60; }
 .bricks-docs .fix { color: #e74c3c; }
 .bricks-docs .update { color: #f39c12; }
+
+.bricks-importer.inactive {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.bricks-importer.inactive input,
+.bricks-importer.inactive button {
+    cursor: not-allowed;
+}

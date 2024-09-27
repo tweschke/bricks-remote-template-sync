@@ -45,12 +45,22 @@ class Bricks_Remote_Template_Sync_Admin {
             'bb-changelog',
             array($this, 'changelog_page')
         );
+
+        add_submenu_page(
+            'bb-import-remote-templates',
+            'License',
+            'License',
+            'manage_options',
+            'bb-license',
+            array($this, 'license_page')
+        );
     }
 
     public function enqueue_admin_styles($hook) {
         if (strpos($hook, 'bb-import-remote-templates') === false &&
             strpos($hook, 'bb-read-me') === false &&
-            strpos($hook, 'bb-changelog') === false) {
+            strpos($hook, 'bb-changelog') === false &&
+            strpos($hook, 'bb-license') === false) {
             return;
         }
         wp_enqueue_style('bb-admin-styles', plugin_dir_url(__FILE__) . 'css/admin-style.css');
@@ -61,34 +71,37 @@ class Bricks_Remote_Template_Sync_Admin {
             return;
         }
 
-        if (!is_client_plugin_license_valid()) {
-            echo '<div class="wrap"><h1>Bricks Remote Template Sync</h1>';
-            echo '<p>Please activate your license to use this plugin. <a href="' . admin_url('options-general.php?page=client-plugin-license') . '">Activate License</a></p></div>';
-            return;
-        }
+        $is_license_valid = is_client_plugin_license_valid();
 
-        // Rest of the import_remote_templates_page function remains the same
-        // ...
+        include plugin_dir_path(__FILE__) . 'partials/import-page.php';
     }
 
     public function read_me_page() {
-        if (!is_client_plugin_license_valid()) {
-            echo '<div class="wrap"><h1>Bricks Remote Template Sync - Read Me</h1>';
-            echo '<p>Please activate your license to access this page. <a href="' . admin_url('options-general.php?page=client-plugin-license') . '">Activate License</a></p></div>';
+        if (!current_user_can('manage_options')) {
             return;
         }
+
+        $is_license_valid = is_client_plugin_license_valid();
 
         include plugin_dir_path(__FILE__) . 'partials/read-me.php';
     }
 
     public function changelog_page() {
-        if (!is_client_plugin_license_valid()) {
-            echo '<div class="wrap"><h1>Bricks Remote Template Sync - Changelog</h1>';
-            echo '<p>Please activate your license to access this page. <a href="' . admin_url('options-general.php?page=client-plugin-license') . '">Activate License</a></p></div>';
+        if (!current_user_can('manage_options')) {
             return;
         }
 
+        $is_license_valid = is_client_plugin_license_valid();
+
         include plugin_dir_path(__FILE__) . 'partials/changelog.php';
+    }
+
+    public function license_page() {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        include plugin_dir_path(__FILE__) . 'partials/license-page.php';
     }
 
     // Rest of the class methods remain the same
