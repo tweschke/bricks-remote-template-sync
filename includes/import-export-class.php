@@ -6,18 +6,7 @@ class Bricks_Remote_Template_Sync_Import_Export {
             return;
         }
 
-        // Ensure the function exists
-        if (!function_exists('is_client_plugin_license_valid')) {
-            error_log('Error: is_client_plugin_license_valid function not found.');
-            echo '<div class="error"><p>Error: License validation function not found. Please contact support.</p></div>';
-            return;
-        }
-
         $is_license_valid = is_client_plugin_license_valid();
-
-        // Debug output
-        error_log('Debug: License status in render_import_export_page: ' . ($is_license_valid ? 'Valid' : 'Invalid'));
-
         $saved_google_sheet_url = get_option('bricks_remote_sync_google_sheet_url', '');
         $feedback_message = '';
         $feedback_type = '';
@@ -104,18 +93,14 @@ class Bricks_Remote_Template_Sync_Import_Export {
                 </div>
 
                 <div class="bricks-section">
-                    <h2>Export to CSV</h2>
+                    <h2>Export Templates</h2>
                     <form method="POST" id="csv-export-form">
                         <?php wp_nonce_field('bb_import_templates'); ?>
-                        <button type="submit" name="export_to_csv" class="button button-primary">Export Templates to CSV</button>
+                        <button type="submit" name="export_to_csv" class="button button-primary">Export to CSV</button>
                     </form>
-                </div>
-
-                <div class="bricks-section">
-                    <h2>Export to JSON</h2>
                     <form method="POST" id="json-export-form">
                         <?php wp_nonce_field('bb_import_templates'); ?>
-                        <button type="submit" name="export_to_json" class="button button-primary">Export Templates to JSON</button>
+                        <button type="submit" name="export_to_json" class="button button-primary">Export to JSON</button>
                     </form>
                 </div>
 
@@ -134,58 +119,24 @@ class Bricks_Remote_Template_Sync_Import_Export {
         <script>
         document.addEventListener('DOMContentLoaded', function() {
             const isLicenseValid = <?php echo $is_license_valid ? 'true' : 'false'; ?>;
-            console.log('Debug: isLicenseValid =', isLicenseValid);
 
             if (!isLicenseValid) {
                 document.querySelectorAll('.bricks-importer input, .bricks-importer button').forEach(el => {
                     el.disabled = true;
-                    console.log('Debug: Disabled element', el);
                 });
             }
 
             document.getElementById('csv-export-form').addEventListener('submit', function(e) {
                 e.preventDefault();
                 if (isLicenseValid) {
-                    fetch('<?php echo esc_url(admin_url('admin-ajax.php')); ?>?action=bb_export_remote_templates_to_csv')
-                        .then(response => response.text())
-                        .then(data => {
-                            const blob = new Blob([data], { type: 'text/csv' });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = 'bricks_remote_templates.csv';
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
-                            showFeedbackMessage('Templates exported to CSV successfully.', 'success');
-                        })
-                        .catch(() => {
-                            showFeedbackMessage('Failed to export templates to CSV.', 'error');
-                        });
+                    window.location.href = '<?php echo admin_url('admin-ajax.php?action=bb_export_remote_templates_to_csv'); ?>';
                 }
             });
 
             document.getElementById('json-export-form').addEventListener('submit', function(e) {
                 e.preventDefault();
                 if (isLicenseValid) {
-                    fetch('<?php echo esc_url(admin_url('admin-ajax.php')); ?>?action=bb_export_remote_templates_to_json')
-                        .then(response => response.json())
-                        .then(data => {
-                            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = 'bricks_remote_templates.json';
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
-                            showFeedbackMessage('Templates exported to JSON successfully.', 'success');
-                        })
-                        .catch(() => {
-                            showFeedbackMessage('Failed to export templates to JSON.', 'error');
-                        });
+                    window.location.href = '<?php echo admin_url('admin-ajax.php?action=bb_export_remote_templates_to_json'); ?>';
                 }
             });
 
@@ -207,53 +158,105 @@ class Bricks_Remote_Template_Sync_Import_Export {
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            showFeedbackMessage('Google Sheet URL saved successfully.', 'success');
+                            alert('Google Sheet URL saved successfully.');
                         } else {
-                            showFeedbackMessage('Error saving Google Sheet URL: ' + data.message, 'error');
+                            alert('Error saving Google Sheet URL: ' + data.message);
                         }
                     })
                     .catch(() => {
-                        showFeedbackMessage('Error saving Google Sheet URL.', 'error');
+                        alert('Error saving Google Sheet URL.');
                     });
                 } else if (!isLicenseValid) {
-                    showFeedbackMessage('Please activate your license to use this feature.', 'error');
+                    alert('Please activate your license to use this feature.');
                 } else {
-                    showFeedbackMessage('Please enter a Google Sheet URL.', 'error');
+                    alert('Please enter a Google Sheet URL.');
                 }
             });
-
-            function showFeedbackMessage(message, type) {
-                const feedbackElement = document.getElementById('feedback-message');
-                if (feedbackElement) {
-                    feedbackElement.className = `notice notice-${type} is-dismissible`;
-                    feedbackElement.innerHTML = `<p>${message}</p>`;
-                    feedbackElement.style.display = 'block';
-                    feedbackElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    setTimeout(() => {
-                        feedbackElement.style.display = 'none';
-                    }, 5000);
-                }
-            }
         });
         </script>
         <?php
     }
 
     public static function import_from_csv($file_path) {
-        // Implement CSV import logic here
+        $file = fopen($file_path, 'r');
+        if ($file) {
+            fgetcsv($file); // Skip header row
+            while (($line = fgetcsv($file)) !== FALSE) {
+                $template_id = $line[0];
+                $name = $line[1];
+                $url = $line[2];
+                $password = isset($line[3]) ? $line[3] : '';
+                self::save_remote_template($template_id, $name, $url, $password);
+            }
+            fclose($file);
+        }
     }
 
     public static function import_from_json($file_path) {
-        // Implement JSON import logic here
+        $json_data = file_get_contents($file_path);
+        $templates = json_decode($json_data, true);
+        if (is_array($templates)) {
+            foreach ($templates as $template) {
+                $template_id = $template['id'];
+                $name = $template['name'];
+                $url = $template['url'];
+                $password = isset($template['password']) ? $template['password'] : '';
+                self::save_remote_template($template_id, $name, $url, $password);
+            }
+        }
     }
 
     public static function import_from_google_sheet($google_sheet_url) {
-        // Implement Google Sheets import logic here
+        $response = wp_remote_get($google_sheet_url);
+        if (!is_wp_error($response)) {
+            $csv_data = wp_remote_retrieve_body($response);
+            $lines = explode("\n", $csv_data);
+            array_shift($lines); // Skip header row
+            foreach ($lines as $line) {
+                $data = str_getcsv($line);
+                if (count($data) >= 3) {
+                    $template_id = $data[0];
+                    $name = $data[1];
+                    $url = $data[2];
+                    $password = isset($data[3]) ? $data[3] : '';
+                    self::save_remote_template($template_id, $name, $url, $password);
+                }
+            }
+        }
+    }
+
+    private static function save_remote_template($template_id, $name, $url, $password) {
+        $remote_templates = get_option('bricks_remote_templates', array());
+        $remote_templates[$template_id] = array(
+            'name' => $name,
+            'url' => $url,
+            'password' => $password
+        );
+        update_option('bricks_remote_templates', $remote_templates);
     }
 
     public static function reset_remote_templates() {
-        // Implement reset logic here
+        delete_option('bricks_remote_templates');
     }
 
-    // Add any other methods you need for your import/export functionality
+    public static function export_to_csv() {
+        $remote_templates = get_option('bricks_remote_templates', array());
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="bricks_remote_templates.csv"');
+        $output = fopen('php://output', 'w');
+        fputcsv($output, array('Template ID', 'Name', 'URL', 'Password'));
+        foreach ($remote_templates as $id => $template) {
+            fputcsv($output, array($id, $template['name'], $template['url'], $template['password']));
+        }
+        fclose($output);
+        exit;
+    }
+
+    public static function export_to_json() {
+        $remote_templates = get_option('bricks_remote_templates', array());
+        header('Content-Type: application/json');
+        header('Content-Disposition: attachment; filename="bricks_remote_templates.json"');
+        echo json_encode($remote_templates, JSON_PRETTY_PRINT);
+        exit;
+    }
 }

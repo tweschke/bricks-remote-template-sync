@@ -24,18 +24,21 @@ define('BRICKS_REMOTE_SYNC_VERSION', '1.0.3');
 define('BRICKS_REMOTE_SYNC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRICKS_REMOTE_SYNC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
-// Include the main class file
-require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/class-init.php';
-
-// Include license check functionality
+// Include the main class files
+require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/class-admin.php';
+require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/import-export-class.php';
 require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/license-check.php';
 
 /**
  * Begins execution of the plugin.
  */
 function run_bricks_remote_template_sync() {
-    $plugin = new Bricks_Remote_Template_Sync\Init();
-    $plugin->run();
+    $plugin_admin = new Bricks_Remote_Template_Sync_Admin();
+    $plugin_admin->init();
+
+    // Add AJAX actions
+    add_action('wp_ajax_bb_export_remote_templates_to_csv', array('Bricks_Remote_Template_Sync_Import_Export', 'export_to_csv'));
+    add_action('wp_ajax_bb_export_remote_templates_to_json', array('Bricks_Remote_Template_Sync_Import_Export', 'export_to_json'));
 }
 
 // Hook for plugin activation
@@ -56,6 +59,3 @@ function bricks_remote_template_sync_deactivate() {
 
 // Run the plugin
 add_action('plugins_loaded', 'run_bricks_remote_template_sync');
-
-// Add license management menu
-add_action('admin_menu', 'client_plugin_license_menu');
