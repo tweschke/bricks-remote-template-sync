@@ -64,7 +64,7 @@ function is_client_plugin_license_valid() {
 function client_plugin_license_notice() {
     ?>
     <div class="notice notice-error">
-        <p>Your Bricks Remote Template Sync license is not active or has expired. Please <a href="<?php echo admin_url('options-general.php?page=client-plugin-license'); ?>">check your license</a> to continue using the plugin.</p>
+        <p>Your Bricks Remote Template Sync license is not active or has expired. Please <a href="<?php echo admin_url('admin.php?page=bb-license'); ?>">check your license</a> to continue using the plugin.</p>
     </div>
     <?php
 }
@@ -107,7 +107,7 @@ function client_plugin_license_page() {
     <div class="wrap">
         <h1>Bricks Remote Template Sync License Management</h1>
         <?php if ($license_status !== 'valid') : ?>
-            <form method="post" action="">
+            <form method="POST">
                 <table class="form-table">
                     <tr>
                         <th scope="row">License Key</th>
@@ -135,7 +135,7 @@ function client_plugin_license_page() {
                     <td>Active</td>
                 </tr>
             </table>
-            <form method="post" action="">
+            <form method="POST">
                 <?php submit_button('Deactivate License', 'secondary', 'deactivate_license'); ?>
             </form>
         <?php endif; ?>
@@ -154,5 +154,12 @@ function mask_license_key($license_key) {
 
 // Add a menu item for license management
 function client_plugin_license_menu() {
-    add_options_page('Bricks Remote Template Sync License', 'Bricks Template Sync License', 'manage_options', 'client-plugin-license', 'client_plugin_license_page');
+    add_submenu_page(
+        'bb-import-remote-templates',
+        'License',
+        'License',
+        'manage_options',
+        'bb-license',
+        'client_plugin_license_page'
+    );
 }

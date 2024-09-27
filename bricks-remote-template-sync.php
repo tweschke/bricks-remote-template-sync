@@ -56,3 +56,6 @@ function bricks_remote_template_sync_deactivate() {
 
 // Run the plugin
 add_action('plugins_loaded', 'run_bricks_remote_template_sync');
+
+// Add license management menu
+add_action('admin_menu', 'client_plugin_license_menu');

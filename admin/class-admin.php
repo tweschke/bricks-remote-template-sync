@@ -46,14 +46,7 @@ class Bricks_Remote_Template_Sync_Admin {
             array($this, 'changelog_page')
         );
 
-        add_submenu_page(
-            'bb-import-remote-templates',
-            'License',
-            'License',
-            'manage_options',
-            'bb-license',
-            array($this, 'license_page')
-        );
+        // License submenu is added in the license-check.php file
     }
 
     public function enqueue_admin_styles($hook) {
@@ -73,7 +66,13 @@ class Bricks_Remote_Template_Sync_Admin {
 
         $is_license_valid = is_client_plugin_license_valid();
 
-        include plugin_dir_path(__FILE__) . 'partials/import-page.php';
+        if (!$is_license_valid) {
+            echo '<div class="wrap"><h1>Bricks Remote Template Sync</h1>';
+            echo '<p>Please activate your license to use this plugin. <a href="' . admin_url('admin.php?page=bb-license') . '">Activate License</a></p></div>';
+            return;
+        }
+
+        // Your existing import_remote_templates_page code here
     }
 
     public function read_me_page() {
@@ -82,6 +81,12 @@ class Bricks_Remote_Template_Sync_Admin {
         }
 
         $is_license_valid = is_client_plugin_license_valid();
+
+        if (!$is_license_valid) {
+            echo '<div class="wrap"><h1>Bricks Remote Template Sync - Read Me</h1>';
+            echo '<p>Please activate your license to access this page. <a href="' . admin_url('admin.php?page=bb-license') . '">Activate License</a></p></div>';
+            return;
+        }
 
         include plugin_dir_path(__FILE__) . 'partials/read-me.php';
     }
@@ -93,17 +98,14 @@ class Bricks_Remote_Template_Sync_Admin {
 
         $is_license_valid = is_client_plugin_license_valid();
 
-        include plugin_dir_path(__FILE__) . 'partials/changelog.php';
-    }
-
-    public function license_page() {
-        if (!current_user_can('manage_options')) {
+        if (!$is_license_valid) {
+            echo '<div class="wrap"><h1>Bricks Remote Template Sync - Changelog</h1>';
+            echo '<p>Please activate your license to access this page. <a href="' . admin_url('admin.php?page=bb-license') . '">Activate License</a></p></div>';
             return;
         }
 
-        include plugin_dir_path(__FILE__) . 'partials/license-page.php';
+        include plugin_dir_path(__FILE__) . 'partials/changelog.php';
     }
 
-    // Rest of the class methods remain the same
-    // ...
+    // Rest of your existing methods...
 }
