@@ -15,25 +15,40 @@ class Bricks_Remote_Template_Sync_Import_Export {
             if (isset($_POST['import_remote_templates']) && !empty($_FILES['csv_file']['tmp_name'])) {
                 check_admin_referer('bb_import_templates');
                 $file_path = $_FILES['csv_file']['tmp_name'];
-                self::import_from_csv($file_path);
-                $feedback_message = 'Templates imported successfully from CSV.';
-                $feedback_type = 'success';
+                $result = self::import_from_csv($file_path);
+                if ($result) {
+                    $feedback_message = 'Templates imported successfully from CSV.';
+                    $feedback_type = 'success';
+                } else {
+                    $feedback_message = 'Failed to import templates from CSV.';
+                    $feedback_type = 'error';
+                }
             }
 
             if (isset($_POST['import_from_google_sheet']) && !empty($_POST['google_sheet_url'])) {
                 check_admin_referer('bb_import_templates');
                 $google_sheet_url = esc_url_raw($_POST['google_sheet_url']);
-                self::import_from_google_sheet($google_sheet_url);
-                $feedback_message = 'Templates synced successfully from Google Sheets.';
-                $feedback_type = 'success';
+                $result = self::import_from_google_sheet($google_sheet_url);
+                if ($result) {
+                    $feedback_message = 'Templates synced successfully from Google Sheets.';
+                    $feedback_type = 'success';
+                } else {
+                    $feedback_message = 'Failed to sync templates from Google Sheets.';
+                    $feedback_type = 'error';
+                }
             }
 
             if (isset($_POST['import_remote_templates_json']) && !empty($_FILES['json_file']['tmp_name'])) {
                 check_admin_referer('bb_import_templates');
                 $file_path = $_FILES['json_file']['tmp_name'];
-                self::import_from_json($file_path);
-                $feedback_message = 'Templates imported successfully from JSON.';
-                $feedback_type = 'success';
+                $result = self::import_from_json($file_path);
+                if ($result) {
+                    $feedback_message = 'Templates imported successfully from JSON.';
+                    $feedback_type = 'success';
+                } else {
+                    $feedback_message = 'Failed to import templates from JSON.';
+                    $feedback_type = 'error';
+                }
             }
 
             if (isset($_POST['reset_remote_templates'])) {
@@ -181,29 +196,43 @@ class Bricks_Remote_Template_Sync_Import_Export {
         $file = fopen($file_path, 'r');
         if ($file) {
             fgetcsv($file); // Skip header row
+            $imported = 0;
             while (($line = fgetcsv($file)) !== FALSE) {
-                $template_id = $line[0];
-                $name = $line[1];
-                $url = $line[2];
-                $password = isset($line[3]) ? $line[3] : '';
-                self::save_remote_template($template_id, $name, $url, $password);
+                if (count($line) >= 3) {
+                    $template_id = sanitize_text_field($line[0]);
+                    $name = sanitize_text_field($line[1]);
+                    $url = esc_url_raw($line[2]);
+                    $password = isset($line[3]) ? sanitize_text_field($line[3]) : '';
+                    if (self::save_remote_template($template_id, $name, $url, $password)) {
+                        $imported++;
+                    }
+                }
             }
             fclose($file);
+            return $imported > 0;
         }
+        return false;
     }
 
     public static function import_from_json($file_path) {
         $json_data = file_get_contents($file_path);
         $templates = json_decode($json_data, true);
         if (is_array($templates)) {
+            $imported = 0;
             foreach ($templates as $template) {
-                $template_id = $template['id'];
-                $name = $template['name'];
-                $url = $template['url'];
-                $password = isset($template['password']) ? $template['password'] : '';
-                self::save_remote_template($template_id, $name, $url, $password);
+                if (isset($template['id'], $template['name'], $template['url'])) {
+                    $template_id = sanitize_text_field($template['id']);
+                    $name = sanitize_text_field($template['name']);
+                    $url = esc_url_raw($template['url']);
+                    $password = isset($template['password']) ? sanitize_text_field($template['password']) : '';
+                    if (self::save_remote_template($template_id, $name, $url, $password)) {
+                        $imported++;
+                    }
+                }
             }
+            return $imported > 0;
         }
+        return false;
     }
 
     public static function import_from_google_sheet($google_sheet_url) {
@@ -212,17 +241,22 @@ class Bricks_Remote_Template_Sync_Import_Export {
             $csv_data = wp_remote_retrieve_body($response);
             $lines = explode("\n", $csv_data);
             array_shift($lines); // Skip header row
+            $imported = 0;
             foreach ($lines as $line) {
                 $data = str_getcsv($line);
                 if (count($data) >= 3) {
-                    $template_id = $data[0];
-                    $name = $data[1];
-                    $url = $data[2];
-                    $password = isset($data[3]) ? $data[3] : '';
-                    self::save_remote_template($template_id, $name, $url, $password);
+                    $template_id = sanitize_text_field($data[0]);
+                    $name = sanitize_text_field($data[1]);
+                    $url = esc_url_raw($data[2]);
+                    $password = isset($data[3]) ? sanitize_text_field($data[3]) : '';
+                    if (self::save_remote_template($template_id, $name, $url, $password)) {
+                        $imported++;
+                    }
                 }
             }
+            return $imported > 0;
         }
+        return false;
     }
 
     private static function save_remote_template($template_id, $name, $url, $password) {
@@ -232,11 +266,11 @@ class Bricks_Remote_Template_Sync_Import_Export {
             'url' => $url,
             'password' => $password
         );
-        update_option('bricks_remote_templates', $remote_templates);
+        return update_option('bricks_remote_templates', $remote_templates);
     }
 
     public static function reset_remote_templates() {
-        delete_option('bricks_remote_templates');
+        return delete_option('bricks_remote_templates');
     }
 
     public static function export_to_csv() {
