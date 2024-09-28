@@ -1,10 +1,15 @@
 <?php
+// Ensure this file is being included by a parent file
+if (!defined('ABSPATH')) {
+    die('Direct access to this file is not allowed.');
+}
+
 class Bricks_Remote_Template_Sync_Admin {
 
     public function init() {
         add_action('admin_menu', array($this, 'add_admin_menu'));
-        add_action('admin_init', array($this, 'register_settings'));
-        add_action('admin_init', array($this, 'handle_license_actions'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         add_action('wp_ajax_bb_save_google_sheet_url', array($this, 'save_google_sheet_url'));
     }
 
@@ -38,10 +43,28 @@ class Bricks_Remote_Template_Sync_Admin {
         );
     }
 
-    public function display_import_page() {
-        if (!current_user_can('manage_options')) {
+    public function enqueue_admin_styles($hook) {
+        if (strpos($hook, 'bb-import-remote-templates') === false &&
+            strpos($hook, 'bb-license') === false) {
             return;
         }
+        wp_enqueue_style('bricks-remote-sync-admin', BRICKS_REMOTE_SYNC_PLUGIN_URL . 'admin/css/admin-style.css', array(), BRICKS_REMOTE_SYNC_VERSION, 'all');
+    }
+
+    public function enqueue_admin_scripts($hook) {
+        if (strpos($hook, 'bb-import-remote-templates') === false &&
+            strpos($hook, 'bb-license') === false) {
+            return;
+        }
+        wp_enqueue_script('bricks-remote-sync-admin', BRICKS_REMOTE_SYNC_PLUGIN_URL . 'admin/js/admin-script.js', array('jquery'), BRICKS_REMOTE_SYNC_VERSION, false);
+        wp_localize_script('bricks-remote-sync-admin', 'bricksRemoteSync', array(
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('bb_save_google_sheet_url')
+        ));
+    }
+
+    public function display_import_page() {
+        error_log("Displaying import page");
         Bricks_Remote_Template_Sync_Import_Export::render_import_export_page();
     }
 
@@ -62,11 +85,11 @@ class Bricks_Remote_Template_Sync_Admin {
                 <table class="form-table">
                     <tr valign="top">
                         <th scope="row">License Key</th>
-                        <td><input type="text" name="client_plugin_license_key" value="<?php echo esc_attr( $license_key ); ?>" /></td>
+                        <td><input type="text" name="client_plugin_license_key" value="<?php echo esc_attr($license_key); ?>" /></td>
                     </tr>
                     <tr valign="top">
                         <th scope="row">License Email</th>
-                        <td><input type="email" name="client_plugin_license_email" value="<?php echo esc_attr( $license_email ); ?>" /></td>
+                        <td><input type="email" name="client_plugin_license_email" value="<?php echo esc_attr($license_email); ?>" /></td>
                     </tr>
                 </table>
                 <?php submit_button('Save License'); ?>
@@ -83,6 +106,23 @@ class Bricks_Remote_Template_Sync_Admin {
             <?php endif; ?>
         </div>
         <?php
+    }
+
+    public function save_google_sheet_url() {
+        check_ajax_referer('bb_save_google_sheet_url', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('You do not have sufficient permissions to perform this action.');
+            return;
+        }
+
+        if (isset($_POST['google_sheet_url'])) {
+            $google_sheet_url = esc_url_raw($_POST['google_sheet_url']);
+            update_option('bricks_remote_sync_google_sheet_url', $google_sheet_url);
+            wp_send_json_success(['message' => 'Google Sheet URL saved successfully.']);
+        } else {
+            wp_send_json_error(['message' => 'Google Sheet URL missing.']);
+        }
     }
 
     public function register_settings() {
@@ -110,22 +150,6 @@ class Bricks_Remote_Template_Sync_Admin {
             } else {
                 add_settings_error('bricks_remote_sync_messages', 'bricks_remote_sync_message', __('License activation failed: ', 'bricks-remote-template-sync') . $validation_result['message'], 'error');
             }
-        }
-    }
-
-    public function save_google_sheet_url() {
-        if (!current_user_can('manage_options') || !is_client_plugin_license_valid()) {
-            wp_send_json_error('You do not have sufficient permissions to perform this action.');
-        }
-
-        check_ajax_referer('bb_save_google_sheet_url');
-
-        if (isset($_POST['google_sheet_url'])) {
-            $google_sheet_url = esc_url_raw($_POST['google_sheet_url']);
-            update_option('bricks_remote_sync_google_sheet_url', $google_sheet_url);
-            wp_send_json_success(['message' => 'Google Sheet URL saved successfully.']);
-        } else {
-            wp_send_json_error(['message' => 'Google Sheet URL missing.']);
         }
     }
 }
