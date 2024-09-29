@@ -20,13 +20,21 @@ class Bricks_Remote_Template_Sync_Reset {
         if ($option_exists) {
             $result = delete_option('bricks_remote_templates');
             error_log("Bricks Remote Template Sync: Delete option result: " . ($result ? 'true' : 'false'));
+            
+            if ($result) {
+                // If deletion was successful, add an empty array as the new value
+                add_option('bricks_remote_templates', array());
+                error_log("Bricks Remote Template Sync: Empty array added as new value for bricks_remote_templates");
+                return true;
+            }
         } else {
-            error_log("Bricks Remote Template Sync: Option 'bricks_remote_templates' does not exist. Creating empty option.");
+            // If the option doesn't exist, create it with an empty array
             $result = add_option('bricks_remote_templates', array());
             error_log("Bricks Remote Template Sync: Add empty option result: " . ($result ? 'true' : 'false'));
+            return $result;
         }
 
-        // Verify that the option has been reset
+        // Final verification
         $check = get_option('bricks_remote_templates', 'option_not_found');
         if ($check === 'option_not_found') {
             error_log("Bricks Remote Template Sync: Option 'bricks_remote_templates' not found after reset attempt.");
