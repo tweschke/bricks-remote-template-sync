@@ -6,37 +6,34 @@ if (!defined('ABSPATH')) {
 
 class Bricks_Remote_Template_Sync_Reset {
     public static function reset_remote_templates() {
-        error_log("Bricks Remote Template Sync: Attempting to reset remote templates...");
+        $global_settings = get_option('Bricks_Global_Settings');
+        
+        if (!is_array($global_settings)) {
+            return "Error: Unable to retrieve Bricks global settings.";
+        }
 
-        // Reset WordPress option
-        update_option('bricks_remote_templates', array());
-        error_log("Bricks Remote Template Sync: WordPress option reset to empty array");
-
-        // Reset Bricks Builder remote templates
-        if (class_exists('Bricks\Templates')) {
-            $bricks_templates = \Bricks\Templates::get_templates();
-            foreach ($bricks_templates as $template_id => $template) {
-                if (isset($template['source']) && $template['source'] === 'remote') {
-                    \Bricks\Templates::delete_template($template_id);
-                    error_log("Bricks Remote Template Sync: Deleted Bricks template with ID: " . $template_id);
-                }
+        if (isset($global_settings['remoteTemplates'])) {
+            $global_settings['remoteTemplates'] = array();
+            $update_result = update_option('Bricks_Global_Settings', $global_settings);
+            
+            if ($update_result) {
+                return "All remote templates have been successfully reset.";
+            } else {
+                return "Error: Failed to update Bricks global settings. No changes were made.";
             }
-            error_log("Bricks Remote Template Sync: Bricks Builder remote templates cleared");
         } else {
-            error_log("Bricks Remote Template Sync: Bricks\Templates class not found");
+            return "No remote templates found in Bricks global settings. Nothing to reset.";
         }
+    }
 
-        // Verify reset
-        $check = get_option('bricks_remote_templates', 'option_not_found');
-        if ($check === 'option_not_found') {
-            error_log("Bricks Remote Template Sync: Option 'bricks_remote_templates' not found after reset attempt.");
-            return false;
-        } elseif (empty($check)) {
-            error_log("Bricks Remote Template Sync: Option 'bricks_remote_templates' successfully reset to empty array.");
-            return true;
-        } else {
-            error_log("Bricks Remote Template Sync: Option 'bricks_remote_templates' still contains data after reset attempt.");
-            return false;
-        }
+    public static function update_remote_templates($new_templates) {
+        $global_settings = get_option('Bricks_Global_Settings', array());
+        $global_settings['remoteTemplates'] = $new_templates;
+        return update_option('Bricks_Global_Settings', $global_settings);
+    }
+
+    public static function get_remote_templates() {
+        $global_settings = get_option('Bricks_Global_Settings', array());
+        return isset($global_settings['remoteTemplates']) ? $global_settings['remoteTemplates'] : array();
     }
 }
