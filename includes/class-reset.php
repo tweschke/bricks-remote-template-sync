@@ -6,35 +6,27 @@ if (!defined('ABSPATH')) {
 
 class Bricks_Remote_Template_Sync_Reset {
     public static function reset_remote_templates() {
-        global $wpdb;
         error_log("Bricks Remote Template Sync: Attempting to reset remote templates...");
 
-        // Check if the option exists before trying to delete it
-        $option_exists = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM $wpdb->options WHERE option_name = %s",
-            'bricks_remote_templates'
-        ));
+        // Reset WordPress option
+        update_option('bricks_remote_templates', array());
+        error_log("Bricks Remote Template Sync: WordPress option reset to empty array");
 
-        error_log("Bricks Remote Template Sync: Option exists check: " . ($option_exists ? 'true' : 'false'));
-
-        if ($option_exists) {
-            $result = delete_option('bricks_remote_templates');
-            error_log("Bricks Remote Template Sync: Delete option result: " . ($result ? 'true' : 'false'));
-            
-            if ($result) {
-                // If deletion was successful, add an empty array as the new value
-                add_option('bricks_remote_templates', array());
-                error_log("Bricks Remote Template Sync: Empty array added as new value for bricks_remote_templates");
-                return true;
+        // Reset Bricks Builder remote templates
+        if (class_exists('Bricks\Templates')) {
+            $bricks_templates = \Bricks\Templates::get_templates();
+            foreach ($bricks_templates as $template_id => $template) {
+                if (isset($template['source']) && $template['source'] === 'remote') {
+                    \Bricks\Templates::delete_template($template_id);
+                    error_log("Bricks Remote Template Sync: Deleted Bricks template with ID: " . $template_id);
+                }
             }
+            error_log("Bricks Remote Template Sync: Bricks Builder remote templates cleared");
         } else {
-            // If the option doesn't exist, create it with an empty array
-            $result = add_option('bricks_remote_templates', array());
-            error_log("Bricks Remote Template Sync: Add empty option result: " . ($result ? 'true' : 'false'));
-            return $result;
+            error_log("Bricks Remote Template Sync: Bricks\Templates class not found");
         }
 
-        // Final verification
+        // Verify reset
         $check = get_option('bricks_remote_templates', 'option_not_found');
         if ($check === 'option_not_found') {
             error_log("Bricks Remote Template Sync: Option 'bricks_remote_templates' not found after reset attempt.");
