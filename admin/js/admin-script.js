@@ -2,7 +2,7 @@
  * Bricks Remote Template Sync Admin JavaScript
  * 
  * This script handles the client-side functionality for the Bricks Remote Template Sync plugin,
- * including CSV and JSON exports.
+ * including CSV and JSON exports, and saving the Google Sheet URL.
  */
 
 jQuery(document).ready(function($) {
@@ -11,40 +11,25 @@ jQuery(document).ready(function($) {
     // Handle click events for CSV and JSON export buttons
     $('#export-csv, #export-json').on('click', function(e) {
         e.preventDefault();
-        var type = $(this).attr('id').split('-')[1];
-        console.log('Export ' + type + ' button clicked');
+        var exportType = $(this).attr('id').split('-')[1];
+        console.log('Export ' + exportType + ' button clicked');
         
-        // Prepare the data for the AJAX request
-        var url = bricksRemoteSync.ajaxurl;
-        var data = {
-            action: 'bb_export_to_' + type,
-            nonce: bricksRemoteSync.nonce
-        };
-
-        // Perform the AJAX request
         $.ajax({
-            url: url,
+            url: bricksRemoteSync.ajaxurl,
             type: 'POST',
-            data: data,
+            data: {
+                action: 'bb_export_remote_templates_to_' + exportType,
+                nonce: bricksRemoteSync.nonce
+            },
             success: function(response) {
                 if (response.success) {
-                    var blob, filename;
-                    if (type === 'csv') {
-                        // Handle CSV export
-                        blob = new Blob([response.data], {type: 'text/csv'});
-                        filename = 'bricks_remote_templates.csv';
-                    } else {
-                        // Handle JSON export
-                        blob = new Blob([JSON.stringify(response.data, null, 2)], {type: 'application/json'});
-                        filename = 'bricks_remote_templates.json';
-                    }
-
                     // Create a download link and trigger the download
+                    var blob = new Blob([response.data], {type: exportType === 'csv' ? 'text/csv' : 'application/json'});
                     var downloadUrl = window.URL.createObjectURL(blob);
                     var a = document.createElement('a');
                     a.style.display = 'none';
                     a.href = downloadUrl;
-                    a.download = filename;
+                    a.download = 'bricks_remote_templates.' + exportType;
                     document.body.appendChild(a);
                     a.click();
                     window.URL.revokeObjectURL(downloadUrl);
@@ -57,6 +42,34 @@ jQuery(document).ready(function($) {
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error('AJAX request failed:', textStatus, errorThrown);
                 alert('Export failed. Please check the console for more information.');
+            }
+        });
+    });
+
+    // Handle saving Google Sheet URL
+    $('#google-sheet-form').on('submit', function(e) {
+        e.preventDefault();
+        var googleSheetUrl = $('#google_sheet_url').val();
+        
+        $.ajax({
+            url: bricksRemoteSync.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'bb_save_google_sheet_url',
+                nonce: bricksRemoteSync.nonce,
+                google_sheet_url: googleSheetUrl
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert('Google Sheet URL saved successfully.');
+                } else {
+                    console.error('Failed to save Google Sheet URL:', response.data);
+                    alert('Failed to save Google Sheet URL. Please check the console for more information.');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('AJAX request failed:', textStatus, errorThrown);
+                alert('Failed to save Google Sheet URL. Please check the console for more information.');
             }
         });
     });

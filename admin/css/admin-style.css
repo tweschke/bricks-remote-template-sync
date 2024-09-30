@@ -1,65 +1,53 @@
+/**
+ * Bricks Remote Template Sync Admin Styles
+ */
+
+ .bricks-importer {
+    max-width: 800px;
+    margin: 20px auto;
+}
+
 .bricks-importer .bricks-section {
-    margin-bottom: 30px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    margin-bottom: 20px;
     padding: 20px;
-    background: #f9f9f9;
-    border: 1px solid #e1e1e1;
-    border-radius: 5px;
 }
 
 .bricks-importer .bricks-section h2 {
     margin-top: 0;
-    font-size: 1.25em;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
 }
 
 .bricks-importer .bricks-section form {
-    display: flex;
-    flex-direction: column;
+    margin-top: 15px;
 }
 
-.bricks-importer .bricks-section input[type="file"],
-.bricks-importer .bricks-section input[type="url"] {
-    margin-bottom: 15px;
-    padding: 6px;
+.bricks-importer input[type="file"],
+.bricks-importer input[type="url"] {
     width: 100%;
     max-width: 400px;
-    box-sizing: border-box;
-}
-
-.bricks-importer .bricks-section button {
-    align-self: flex-start;
-}
-
-.bricks-importer .bricks-section .button-secondary {
-    background-color: #d9534f;
-    border-color: #d43f3a;
-    color: #fff;
-}
-
-.bricks-importer .bricks-section .button-secondary:hover {
-    background-color: #c9302c;
-    border-color: #ac2925;
-    color: #fff;
+    margin-bottom: 10px;
 }
 
 .bricks-importer .button-group {
-    display: flex;
-    gap: 10px;
+    margin-top: 15px;
 }
 
-#feedback-message {
-    margin: 20px 0;
-    padding: 10px;
-    border-left: 4px solid #00a0d2;
-    background: #fff;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+.bricks-importer .button-group .button {
+    margin-right: 10px;
 }
 
-#feedback-message.notice-success {
-    border-left-color: #46b450;
+.bricks-importer .button-secondary.bricks-reset-button {
+    color: #a00;
+    border-color: #a00;
 }
 
-#feedback-message.notice-error {
-    border-left-color: #dc3232;
+.bricks-importer .button-secondary.bricks-reset-button:hover {
+    color: #dc3232;
+    border-color: #dc3232;
 }
 
 .bricks-importer.inactive {
@@ -72,6 +60,26 @@
     cursor: not-allowed !important;
 }
 
-.notice-error {
+#feedback-message {
+    padding: 10px 15px;
+    margin: 20px 0;
+    border-left: 4px solid #46b450;
+    background: #fff;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+}
+
+#feedback-message.error {
     border-left-color: #dc3232;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+    .bricks-importer input[type="file"],
+    .bricks-importer input[type="url"] {
+        max-width: 100%;
+    }
+    
+    .bricks-importer .button-group .button {
+        margin-bottom: 10px;
+    }
 }

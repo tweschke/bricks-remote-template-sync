@@ -4,6 +4,12 @@ if (!defined('ABSPATH')) {
 }
 
 class Bricks_Remote_Template_Sync_Import {
+    /**
+     * Import templates from a CSV file
+     *
+     * @param string $file_path Path to the CSV file
+     * @return string Result message
+     */
     public static function import_from_csv($file_path) {
         if (($handle = fopen($file_path, "r")) !== FALSE) {
             $new_templates = array();
@@ -26,6 +32,12 @@ class Bricks_Remote_Template_Sync_Import {
         return "Error reading CSV file.";
     }
 
+    /**
+     * Import templates from a JSON file
+     *
+     * @param string $file_path Path to the JSON file
+     * @return string Result message
+     */
     public static function import_from_json($file_path) {
         $json_data = file_get_contents($file_path);
         $templates = json_decode($json_data, true);
@@ -47,6 +59,11 @@ class Bricks_Remote_Template_Sync_Import {
         return "Error reading JSON file.";
     }
 
+    /**
+     * Update remote templates in the database
+     *
+     * @param array $new_templates Array of new templates
+     */
     private static function update_remote_templates($new_templates) {
         $global_settings = get_option('Bricks_Global_Settings', array());
         $global_settings['remoteTemplates'] = $new_templates;

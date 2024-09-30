@@ -4,6 +4,9 @@ if (!defined('ABSPATH')) {
 }
 
 class Bricks_Remote_Template_Sync_Export {
+    /**
+     * Export templates to CSV
+     */
     public static function export_to_csv() {
         $templates = self::get_remote_templates();
         $filename = 'bricks_remote_templates_' . date('Y-m-d') . '.csv';
@@ -22,6 +25,9 @@ class Bricks_Remote_Template_Sync_Export {
         exit;
     }
 
+    /**
+     * Export templates to JSON
+     */
     public static function export_to_json() {
         $templates = self::get_remote_templates();
         $filename = 'bricks_remote_templates_' . date('Y-m-d') . '.json';
@@ -33,6 +39,11 @@ class Bricks_Remote_Template_Sync_Export {
         exit;
     }
 
+    /**
+     * Get remote templates from database
+     * 
+     * @return array Array of remote templates
+     */
     private static function get_remote_templates() {
         $global_settings = get_option('Bricks_Global_Settings', array());
         return isset($global_settings['remoteTemplates']) ? $global_settings['remoteTemplates'] : array();

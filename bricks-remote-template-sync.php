@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Bricks Remote Template Sync
  * Plugin URI: https://wpdesigns4u.com/plugins/bricks-remote-template-sync
- * Description: A plugin to import remote templates into Bricks Builder from a CSV file or Google Sheets, reset all remote templates, and export/import to/from CSV or JSON.
- * Version: 1.0.4
+ * Description: A plugin to import remote templates into Bricks Builder from a CSV file, JSON file, or Google Sheets, reset all remote templates, and export to CSV or JSON.
+ * Version: 1.0.5
  * Requires at least: 5.2
  * Requires PHP: 7.2
  * Author: Thomas Weschke
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRICKS_REMOTE_SYNC_VERSION', '1.0.4');
+define('BRICKS_REMOTE_SYNC_VERSION', '1.0.5');
 define('BRICKS_REMOTE_SYNC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRICKS_REMOTE_SYNC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -36,10 +36,30 @@ function run_bricks_remote_template_sync() {
     $plugin_admin->init();
 
     // Add AJAX actions
-    add_action('wp_ajax_bb_export_remote_templates_to_csv', array('Bricks_Remote_Template_Sync_Import_Export', 'export_to_csv'));
-    add_action('wp_ajax_bb_export_remote_templates_to_json', array('Bricks_Remote_Template_Sync_Import_Export', 'export_to_json'));
+    add_action('wp_ajax_bb_export_remote_templates_to_csv', array('Bricks_Remote_Template_Sync_Export', 'export_to_csv'));
+    add_action('wp_ajax_bb_export_remote_templates_to_json', array('Bricks_Remote_Template_Sync_Export', 'export_to_json'));
     add_action('wp_ajax_bb_save_google_sheet_url', array('Bricks_Remote_Template_Sync_Import_Export', 'save_google_sheet_url'));
 }
 
 // Run the plugin
 add_action('plugins_loaded', 'run_bricks_remote_template_sync');
+
+// Register activation hook
+register_activation_hook(__FILE__, 'bricks_remote_template_sync_activate');
+
+/**
+ * Plugin activation function
+ */
+function bricks_remote_template_sync_activate() {
+    // Perform any necessary setup on activation
+}
+
+// Register deactivation hook
+register_deactivation_hook(__FILE__, 'bricks_remote_template_sync_deactivate');
+
+/**
+ * Plugin deactivation function
+ */
+function bricks_remote_template_sync_deactivate() {
+    // Perform any necessary cleanup on deactivation
+}
