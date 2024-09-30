@@ -34,14 +34,17 @@ class Bricks_Remote_Template_Sync_Import_Export {
 
     public static function import_from_csv($file) {
         // Implement CSV import logic here
+        return "CSV import not yet implemented.";
     }
 
     public static function import_from_json($file) {
         // Implement JSON import logic here
+        return "JSON import not yet implemented.";
     }
 
     public static function import_from_google_sheet($url) {
         // Implement Google Sheet import logic here
+        return "Google Sheet import not yet implemented.";
     }
 
     public static function reset_remote_templates() {
@@ -63,17 +66,5 @@ class Bricks_Remote_Template_Sync_Import_Export {
         } else {
             return "No remote templates found in Bricks global settings. Nothing to reset.";
         }
-    }
-
-    public static function export_to_csv() {
-        // Implement CSV export logic here
-    }
-
-    public static function export_to_json() {
-        // Implement JSON export logic here
-    }
-
-    public static function save_google_sheet_url() {
-        // Implement Google Sheet URL saving logic here
     }
 }

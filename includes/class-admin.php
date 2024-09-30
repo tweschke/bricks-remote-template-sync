@@ -1,4 +1,8 @@
 <?php
+if (!defined('ABSPATH')) {
+    die('Direct access is not allowed.');
+}
+
 class Bricks_Remote_Template_Sync_Admin {
     public function init() {
         add_action('admin_menu', array($this, 'add_admin_menu'));
