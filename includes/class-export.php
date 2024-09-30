@@ -1,28 +1,40 @@
 <?php
-// Ensure this file is being included by a parent file
 if (!defined('ABSPATH')) {
-    die('Direct access to this file is not allowed.');
+    die('Direct access is not allowed.');
 }
 
 class Bricks_Remote_Template_Sync_Export {
     public static function export_to_csv() {
-        $remote_templates = get_option('bricks_remote_templates', array());
+        $templates = self::get_remote_templates();
+        $filename = 'bricks_remote_templates_' . date('Y-m-d') . '.csv';
+
         header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="bricks_remote_templates.csv"');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
         $output = fopen('php://output', 'w');
-        fputcsv($output, array('Template ID', 'Name', 'URL', 'Password'));
-        foreach ($remote_templates as $id => $template) {
+        fputcsv($output, array('ID', 'Name', 'URL', 'Password'));
+
+        foreach ($templates as $id => $template) {
             fputcsv($output, array($id, $template['name'], $template['url'], $template['password']));
         }
+
         fclose($output);
         exit;
     }
 
     public static function export_to_json() {
-        $remote_templates = get_option('bricks_remote_templates', array());
+        $templates = self::get_remote_templates();
+        $filename = 'bricks_remote_templates_' . date('Y-m-d') . '.json';
+
         header('Content-Type: application/json');
-        header('Content-Disposition: attachment; filename="bricks_remote_templates.json"');
-        echo json_encode($remote_templates, JSON_PRETTY_PRINT);
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        echo json_encode($templates, JSON_PRETTY_PRINT);
         exit;
+    }
+
+    private static function get_remote_templates() {
+        $global_settings = get_option('Bricks_Global_Settings', array());
+        return isset($global_settings['remoteTemplates']) ? $global_settings['remoteTemplates'] : array();
     }
 }
