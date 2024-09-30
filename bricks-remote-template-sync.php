@@ -27,7 +27,6 @@ define('BRICKS_REMOTE_SYNC_PLUGIN_URL', plugin_dir_url(__FILE__));
 // Include the required files
 require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/class-admin.php';
 require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/import-export-class.php';
-require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/license-check.php';
 
 /**
  * Begins execution of the plugin.
@@ -37,25 +36,9 @@ function run_bricks_remote_template_sync() {
     $plugin_admin->init();
 
     // Add AJAX actions
-    add_action('wp_ajax_bb_export_remote_templates_to_csv', array('Bricks_Remote_Template_Sync_Export', 'export_to_csv'));
-    add_action('wp_ajax_bb_export_remote_templates_to_json', array('Bricks_Remote_Template_Sync_Export', 'export_to_json'));
-    add_action('wp_ajax_bb_save_google_sheet_url', array('Bricks_Remote_Template_Sync_Sync', 'save_google_sheet_url'));
-}
-
-// Hook for plugin activation
-register_activation_hook(__FILE__, 'bricks_remote_template_sync_activate');
-
-function bricks_remote_template_sync_activate() {
-    // Schedule license check
-    schedule_license_check();
-}
-
-// Hook for plugin deactivation
-register_deactivation_hook(__FILE__, 'bricks_remote_template_sync_deactivate');
-
-function bricks_remote_template_sync_deactivate() {
-    // Unschedule license check
-    unschedule_license_check();
+    add_action('wp_ajax_bb_export_remote_templates_to_csv', array('Bricks_Remote_Template_Sync_Import_Export', 'export_to_csv'));
+    add_action('wp_ajax_bb_export_remote_templates_to_json', array('Bricks_Remote_Template_Sync_Import_Export', 'export_to_json'));
+    add_action('wp_ajax_bb_save_google_sheet_url', array('Bricks_Remote_Template_Sync_Import_Export', 'save_google_sheet_url'));
 }
 
 // Run the plugin

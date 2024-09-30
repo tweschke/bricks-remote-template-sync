@@ -1,16 +1,11 @@
 <?php
-// Ensure this file is being included by a parent file
-if (!defined('ABSPATH')) {
-    die('Direct access to this file is not allowed.');
-}
-
 class Bricks_Remote_Template_Sync_Import_Export {
     public static function render_import_export_page() {
         if (!current_user_can('manage_options')) {
             return;
         }
 
-        $is_license_valid = is_client_plugin_license_valid();
+        $is_license_valid = true; // Replace with actual license check if implemented
         $saved_google_sheet_url = get_option('bricks_remote_sync_google_sheet_url', '');
         $message = '';
         $message_type = 'updated';
@@ -30,48 +25,51 @@ class Bricks_Remote_Template_Sync_Import_Export {
             }
         }
 
-        include plugin_dir_path(__FILE__) . '../admin/partials/import-export-page.php';
+        include BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'admin/partials/import-export-page.php';
+    }
+
+    public static function import_from_csv($file) {
+        // Implement CSV import logic here
+    }
+
+    public static function import_from_json($file) {
+        // Implement JSON import logic here
+    }
+
+    public static function import_from_google_sheet($url) {
+        // Implement Google Sheet import logic here
+    }
+
+    public static function reset_remote_templates() {
+        $global_settings = get_option('Bricks_Global_Settings');
+        
+        if (!is_array($global_settings)) {
+            return "Error: Unable to retrieve Bricks global settings.";
+        }
+
+        if (isset($global_settings['remoteTemplates'])) {
+            $global_settings['remoteTemplates'] = array();
+            $update_result = update_option('Bricks_Global_Settings', $global_settings);
+            
+            if ($update_result) {
+                return "All remote templates have been successfully reset.";
+            } else {
+                return "Error: Failed to update Bricks global settings. No changes were made.";
+            }
+        } else {
+            return "No remote templates found in Bricks global settings. Nothing to reset.";
+        }
     }
 
     public static function export_to_csv() {
-        if (!current_user_can('manage_options') || !is_client_plugin_license_valid()) {
-            wp_die('You do not have sufficient permissions to access this page.');
-        }
-        Bricks_Remote_Template_Sync_Export::export_to_csv();
+        // Implement CSV export logic here
     }
 
     public static function export_to_json() {
-        if (!current_user_can('manage_options') || !is_client_plugin_license_valid()) {
-            wp_die('You do not have sufficient permissions to access this page.');
-        }
-        Bricks_Remote_Template_Sync_Export::export_to_json();
+        // Implement JSON export logic here
     }
 
     public static function save_google_sheet_url() {
-        check_ajax_referer('bb_save_google_sheet_url', 'nonce');
-        if (!current_user_can('manage_options') || !is_client_plugin_license_valid()) {
-            wp_send_json_error('You do not have sufficient permissions to perform this action.');
-        }
-        Bricks_Remote_Template_Sync_Sync::save_google_sheet_url();
-    }
-}
-public static function reset_remote_templates() {
-    $global_settings = get_option('Bricks_Global_Settings');
-    
-    if (!is_array($global_settings)) {
-        return "Error: Unable to retrieve Bricks global settings.";
-    }
-
-    if (isset($global_settings['remoteTemplates'])) {
-        $global_settings['remoteTemplates'] = array();
-        $update_result = update_option('Bricks_Global_Settings', $global_settings);
-        
-        if ($update_result) {
-            return "All remote templates have been successfully reset.";
-        } else {
-            return "Error: Failed to update Bricks global settings. No changes were made.";
-        }
-    } else {
-        return "No remote templates found in Bricks global settings. Nothing to reset.";
+        // Implement Google Sheet URL saving logic here
     }
 }
