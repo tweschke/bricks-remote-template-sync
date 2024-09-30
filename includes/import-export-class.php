@@ -1,4 +1,8 @@
 <?php
+if (!defined('ABSPATH')) {
+    die('Direct access is not allowed.');
+}
+
 class Bricks_Remote_Template_Sync_Import_Export {
     public static function render_import_export_page() {
         if (!current_user_can('manage_options')) {
