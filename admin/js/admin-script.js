@@ -12,6 +12,7 @@ jQuery(document).ready(function($) {
                 nonce: bricksRemoteSync.export_nonce
             },
             success: function(response) {
+                console.log('Export response:', response);  // Log the entire response
                 if (response.success) {
                     var blob = new Blob([response.data], {type: exportType === 'csv' ? 'text/csv' : 'application/json'});
                     var link = document.createElement('a');
@@ -20,15 +21,17 @@ jQuery(document).ready(function($) {
                     link.click();
                 } else {
                     console.error('Export failed:', response.data);
-                    alert('Export failed: ' + response.data);
+                    alert('Export failed: ' + (response.data || 'Unknown error'));
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error('AJAX request failed:', textStatus, errorThrown);
+                console.log('Response:', jqXHR.responseText);  // Log the raw response text
                 alert('Export failed. Please check the console for more information.');
             }
         });
     });
+
 
     // Handle saving Google Sheet URL
     $('#google-sheet-form').on('submit', function(e) {
