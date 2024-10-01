@@ -19,15 +19,15 @@ jQuery(document).ready(function($) {
                 nonce: bricksRemoteSync.nonce
             },
             success: function(response) {
-                if (response.success) {
-                    var blob = new Blob([response.data], {type: exportType === 'csv' ? 'text/csv' : 'application/json'});
+                if (response.success && response.data) {
+                    var blob = new Blob([atob(response.data.data)], {type: response.data.type});
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = 'bricks_remote_templates.' + exportType;
+                    link.download = response.data.filename;
                     link.click();
                 } else {
                     console.error('Export failed:', response.data);
-                    alert('Export failed: ' + response.data);
+                    alert('Export failed: ' + (response.data || 'Unknown error'));
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {

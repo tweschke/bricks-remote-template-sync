@@ -19,12 +19,7 @@ class Bricks_Remote_Template_Sync_Export {
             $templates = self::get_remote_templates();
             $filename = 'bricks_remote_templates_' . date('Y-m-d') . '.csv';
 
-            header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="' . $filename . '"');
-            header('Pragma: no-cache');
-            header('Expires: 0');
-
-            $output = fopen('php://output', 'w');
+            $output = fopen('php://temp', 'w');
             if ($output === false) {
                 throw new Exception('Failed to open output stream');
             }
@@ -35,9 +30,16 @@ class Bricks_Remote_Template_Sync_Export {
                 fputcsv($output, array($id, $template['name'], $template['url'], $template['password']));
             }
 
+            rewind($output);
+            $csv_data = stream_get_contents($output);
             fclose($output);
+
             self::log_error('CSV export completed successfully');
-            exit;
+            wp_send_json_success(array(
+                'filename' => $filename,
+                'data' => base64_encode($csv_data),
+                'type' => 'text/csv'
+            ));
         } catch (Exception $e) {
             self::log_error('CSV Export Error: ' . $e->getMessage());
             wp_send_json_error('Export failed: ' . $e->getMessage());
@@ -59,14 +61,14 @@ class Bricks_Remote_Template_Sync_Export {
             $templates = self::get_remote_templates();
             $filename = 'bricks_remote_templates_' . date('Y-m-d') . '.json';
 
-            header('Content-Type: application/json');
-            header('Content-Disposition: attachment; filename="' . $filename . '"');
-            header('Pragma: no-cache');
-            header('Expires: 0');
+            $json_data = json_encode($templates, JSON_PRETTY_PRINT);
 
-            echo json_encode($templates, JSON_PRETTY_PRINT);
             self::log_error('JSON export completed successfully');
-            exit;
+            wp_send_json_success(array(
+                'filename' => $filename,
+                'data' => base64_encode($json_data),
+                'type' => 'application/json'
+            ));
         } catch (Exception $e) {
             self::log_error('JSON Export Error: ' . $e->getMessage());
             wp_send_json_error('Export failed: ' . $e->getMessage());
