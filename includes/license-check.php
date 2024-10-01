@@ -123,4 +123,24 @@ function handle_license_form_submission() {
         add_settings_error('bricks_remote_sync_messages', 'bricks_remote_sync_message', __('License deactivated successfully.', 'bricks-remote-template-sync'), 'updated');
     }
 }
-add_action('admin_init', 'handle_license_form_submission');
+
+function bricks_remote_sync_register_settings() {
+    register_setting('bricks_remote_sync_license', 'client_plugin_license_key');
+    register_setting('bricks_remote_sync_license', 'client_plugin_license_email');
+    register_setting('bricks_remote_sync_license', 'client_plugin_license_status');
+}
+
+/**
+ * Initialize license-related hooks
+ */
+function init_license_hooks() {
+    add_action('admin_init', 'handle_license_form_submission');
+    add_action('admin_init', 'bricks_remote_sync_register_settings');
+    add_action('admin_notices', 'client_plugin_license_notice');
+    
+    // Schedule the daily license check
+    schedule_license_check();
+}
+
+// Add action to unschedule the license check on plugin deactivation
+register_deactivation_hook(__FILE__, 'unschedule_license_check');
