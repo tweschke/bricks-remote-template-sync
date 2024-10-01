@@ -56,7 +56,4 @@ jQuery(document).ready(function($) {
             }
         });
     });
-
-
-    // You can add more JavaScript functionality here as needed
 });

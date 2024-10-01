@@ -15,6 +15,8 @@ class Bricks_Remote_Template_Sync_Export {
 
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
 
         $output = fopen('php://output', 'w');
         fputcsv($output, array('ID', 'Name', 'URL', 'Password'));
@@ -38,6 +40,8 @@ class Bricks_Remote_Template_Sync_Export {
 
         header('Content-Type: application/json');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
 
         echo json_encode($templates, JSON_PRETTY_PRINT);
         wp_die();
