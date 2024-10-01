@@ -60,8 +60,12 @@ jQuery(document).ready(function($) {
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error('AJAX request failed:', textStatus, errorThrown);
-            alert('Failed to save Google Sheet URL. Error: ' + textStatus);
+            console.error('Response:', jqXHR.responseText);
+            alert('Failed to save Google Sheet URL. Error: ' + textStatus + '. Check console for details.');
         }
     });
 });
+
+// Export functionality (if needed)
+// ...
 });
