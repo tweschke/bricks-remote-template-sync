@@ -1,10 +1,3 @@
-/**
- * Bricks Remote Template Sync Admin JavaScript
- * 
- * This script handles the client-side functionality for the Bricks Remote Template Sync plugin,
- * including CSV and JSON exports, and saving the Google Sheet URL.
- */
-
 jQuery(document).ready(function($) {
     // Handle click events for CSV and JSON export buttons
     $('#export-csv, #export-json').on('click', function(e) {
@@ -16,18 +9,18 @@ jQuery(document).ready(function($) {
             type: 'POST',
             data: {
                 action: 'bb_export_remote_templates_to_' + exportType,
-                nonce: bricksRemoteSync.nonce
+                nonce: bricksRemoteSync.export_nonce
             },
             success: function(response) {
-                if (response.success && response.data) {
-                    var blob = new Blob([atob(response.data.data)], {type: response.data.type});
+                if (response.success) {
+                    var blob = new Blob([response.data], {type: exportType === 'csv' ? 'text/csv' : 'application/json'});
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = response.data.filename;
+                    link.download = 'bricks_remote_templates.' + exportType;
                     link.click();
                 } else {
                     console.error('Export failed:', response.data);
-                    alert('Export failed: ' + (response.data || 'Unknown error'));
+                    alert('Export failed: ' + response.data);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -37,35 +30,31 @@ jQuery(document).ready(function($) {
         });
     });
 
-   // Handle saving Google Sheet URL
-   $('#google-sheet-form').on('submit', function(e) {
-    e.preventDefault();
-    var googleSheetUrl = $('#google_sheet_url').val();
-    
-    $.ajax({
-        url: bricksRemoteSync.ajaxurl,
-        type: 'POST',
-        data: {
-            action: 'bb_save_google_sheet_url',
-            nonce: bricksRemoteSync.nonce,
-            google_sheet_url: googleSheetUrl
-        },
-        success: function(response) {
-            if (response.success) {
-                alert('Success: ' + response.data);
-            } else {
-                console.error('Failed to save Google Sheet URL:', response.data);
-                alert('Error: ' + response.data);
+    // Handle saving Google Sheet URL
+    $('#google-sheet-form').on('submit', function(e) {
+        e.preventDefault();
+        var googleSheetUrl = $('#google_sheet_url').val();
+        
+        $.ajax({
+            url: bricksRemoteSync.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'bb_save_google_sheet_url',
+                nonce: bricksRemoteSync.save_url_nonce,
+                google_sheet_url: googleSheetUrl
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert('Success: ' + response.data);
+                } else {
+                    console.error('Failed to save Google Sheet URL:', response.data);
+                    alert('Error: ' + response.data);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('AJAX request failed:', textStatus, errorThrown);
+                alert('Failed to save Google Sheet URL. Error: ' + textStatus);
             }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error('AJAX request failed:', textStatus, errorThrown);
-            console.error('Response:', jqXHR.responseText);
-            alert('Failed to save Google Sheet URL. Error: ' + textStatus + '. Check console for details.');
-        }
+        });
     });
-});
-
-// Export functionality (if needed)
-// ...
 });
