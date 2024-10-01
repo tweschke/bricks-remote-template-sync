@@ -62,7 +62,16 @@ class Bricks_Remote_Template_Sync_Sync {
 
         if ($update_result) {
             self::log_message("Successfully updated templates in the database");
-            return array('success' => true, 'message' => 'Successfully imported ' . count($new_templates) . ' templates');
+            
+            // Verify the update
+            $verified_settings = get_option('Bricks_Global_Settings', array());
+            if (isset($verified_settings['remoteTemplates']) && $verified_settings['remoteTemplates'] === $new_templates) {
+                self::log_message("Verification successful: Templates correctly stored in the database");
+                return array('success' => true, 'message' => 'Successfully imported and verified ' . count($new_templates) . ' templates');
+            } else {
+                self::log_message("Verification failed: Templates not correctly stored in the database");
+                return array('success' => false, 'message' => 'Templates were updated but verification failed');
+            }
         } else {
             self::log_message("Failed to update templates in the database");
             return array('success' => false, 'message' => 'Failed to update templates in the database');

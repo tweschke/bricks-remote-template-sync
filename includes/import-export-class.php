@@ -37,6 +37,16 @@ class Bricks_Remote_Template_Sync_Import_Export {
                 $message = $result['message'];
                 $message_type = $result['success'] ? 'updated' : 'error';
                 self::log_message("Google Sheet import result: " . ($result['success'] ? 'Success' : 'Failure') . " - $message");
+                
+                // Additional verification step
+                if ($result['success']) {
+                    $verified_settings = get_option('Bricks_Global_Settings', array());
+                    if (!isset($verified_settings['remoteTemplates']) || empty($verified_settings['remoteTemplates'])) {
+                        $message .= " However, the templates are not visible in Bricks settings. Please check Bricks configuration.";
+                        $message_type = 'error';
+                        self::log_message("Templates not found in Bricks settings after successful import");
+                    }
+                }
             } elseif (isset($_POST['reset_remote_templates'])) {
                 self::log_message("Initiating template reset");
                 $message = Bricks_Remote_Template_Sync_Reset::reset_remote_templates();
@@ -44,11 +54,9 @@ class Bricks_Remote_Template_Sync_Import_Export {
             } elseif (isset($_POST['export_to_csv'])) {
                 self::log_message("Initiating CSV export");
                 Bricks_Remote_Template_Sync_Export::export_to_csv();
-                // Note: export_to_csv() function should handle exit, so this line won't be reached
             } elseif (isset($_POST['export_to_json'])) {
                 self::log_message("Initiating JSON export");
                 Bricks_Remote_Template_Sync_Export::export_to_json();
-                // Note: export_to_json() function should handle exit, so this line won't be reached
             }
 
             if (strpos($message, 'Error') !== false || strpos($message, 'Failed') !== false) {
