@@ -37,7 +37,11 @@ if (!defined('ABSPATH')) {
             <form method="POST" id="google-sheet-form">
                 <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
                 <input type="url" name="google_sheet_url" id="google_sheet_url" value="<?php echo esc_attr($saved_google_sheet_url); ?>" placeholder="https://docs.google.com/spreadsheets/d/..." required>
-                <button type="submit" name="import_from_google_sheet" class="button button-primary"><?php _e('Sync Templates', 'bricks-remote-template-sync'); ?></button>
+                <button type="submit" name="save_google_sheet_url" class="button button-primary"><?php _e('Save Sync URL', 'bricks-remote-template-sync'); ?></button>
+            </form>
+            <form method="POST" id="google-sheet-sync-form">
+                <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
+                <button type="submit" name="run_google_sheet_sync" class="button button-primary" <?php echo empty($saved_google_sheet_url) ? 'disabled' : ''; ?>><?php _e('Run Sync', 'bricks-remote-template-sync'); ?></button>
             </form>
         </div>
 
