@@ -11,22 +11,30 @@ jQuery(document).ready(function($) {
         e.preventDefault();
         var exportType = $(this).attr('id').split('-')[1];
         
-        var form = $('<form>', {
-            'method': 'POST',
-            'action': ajaxurl
-        }).append($('<input>', {
-            'type': 'hidden',
-            'name': 'action',
-            'value': 'bb_export_remote_templates_to_' + exportType
-        })).append($('<input>', {
-            'type': 'hidden',
-            'name': 'nonce',
-            'value': bricksRemoteSync.nonce
-        }));
-
-        $('body').append(form);
-        form.submit();
-        form.remove();
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'bb_export_remote_templates_to_' + exportType,
+                nonce: bricksRemoteSync.nonce
+            },
+            success: function(response) {
+                if (response.success) {
+                    var blob = new Blob([response.data], {type: exportType === 'csv' ? 'text/csv' : 'application/json'});
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'bricks_remote_templates.' + exportType;
+                    link.click();
+                } else {
+                    console.error('Export failed:', response.data);
+                    alert('Export failed: ' + response.data);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('AJAX request failed:', textStatus, errorThrown);
+                alert('Export failed. Please check the console for more information.');
+            }
+        });
     });
 
     // Handle saving Google Sheet URL
@@ -47,7 +55,7 @@ jQuery(document).ready(function($) {
                     alert('Google Sheet URL saved successfully.');
                 } else {
                     console.error('Failed to save Google Sheet URL:', response.data);
-                    alert('Failed to save Google Sheet URL. Please check the console for more information.');
+                    alert('Failed to save Google Sheet URL: ' + response.data);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {

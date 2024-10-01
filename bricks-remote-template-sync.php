@@ -39,10 +39,20 @@ function run_bricks_remote_template_sync() {
     add_action('wp_ajax_bb_export_remote_templates_to_csv', array('Bricks_Remote_Template_Sync_Export', 'export_to_csv'));
     add_action('wp_ajax_bb_export_remote_templates_to_json', array('Bricks_Remote_Template_Sync_Export', 'export_to_json'));
     add_action('wp_ajax_bb_save_google_sheet_url', array('Bricks_Remote_Template_Sync_Import_Export', 'save_google_sheet_url'));
+
+    // Debugging: Log AJAX actions
+    add_action('admin_init', function() {
+        error_log('Bricks Remote Template Sync: AJAX actions registered');
+    });
 }
 
 // Run the plugin
 add_action('plugins_loaded', 'run_bricks_remote_template_sync');
+
+// Debugging: Log when the plugin is loaded
+add_action('plugins_loaded', function() {
+    error_log('Bricks Remote Template Sync: Plugin loaded');
+});
 
 // Register activation hook
 register_activation_hook(__FILE__, 'bricks_remote_template_sync_activate');
