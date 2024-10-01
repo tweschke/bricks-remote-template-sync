@@ -1,4 +1,10 @@
 <?php
+/**
+ * Admin page template for import and export functionality
+ *
+ * @package Bricks_Remote_Template_Sync
+ */
+
 if (!defined('ABSPATH')) {
     die('Direct access is not allowed.');
 }
@@ -8,12 +14,17 @@ if (!defined('ABSPATH')) {
     <hr class="wp-header-end">
 
     <?php if (!empty($message)): ?>
-        <div id="feedback-message" class="<?php echo $message_type; ?>">
+        <div id="feedback-message" class="notice notice-<?php echo $message_type; ?> is-dismissible">
             <p><?php echo esc_html($message); ?></p>
         </div>
     <?php endif; ?>
 
-    <?php if ($is_license_valid): ?>
+    <?php if (!$is_license_valid): ?>
+        <div class="notice notice-error">
+            <p><?php _e('Your license is not active or has expired. Please activate your license to use these features.', 'bricks-remote-template-sync'); ?></p>
+            <p><a href="<?php echo admin_url('admin.php?page=bb-license'); ?>" class="button button-primary"><?php _e('Manage License', 'bricks-remote-template-sync'); ?></a></p>
+        </div>
+    <?php else: ?>
         <div class="bricks-section">
             <h2><?php _e('Import from CSV', 'bricks-remote-template-sync'); ?></h2>
             <form method="POST" enctype="multipart/form-data">
@@ -59,10 +70,6 @@ if (!defined('ABSPATH')) {
                 <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
                 <button type="submit" name="reset_remote_templates" class="button button-secondary bricks-reset-button"><?php _e('Reset Remote Templates', 'bricks-remote-template-sync'); ?></button>
             </form>
-        </div>
-    <?php else: ?>
-        <div class="bricks-section">
-            <p><?php _e('Please activate your license to access the import/export features.', 'bricks-remote-template-sync'); ?></p>
         </div>
     <?php endif; ?>
 </div>

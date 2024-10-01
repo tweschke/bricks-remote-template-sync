@@ -1,4 +1,13 @@
 <?php
+/**
+ * Import and Export functionality for Bricks Remote Template Sync
+ *
+ * This file contains the class that handles import and export operations
+ * for the Bricks Remote Template Sync plugin.
+ *
+ * @package Bricks_Remote_Template_Sync
+ */
+
 if (!defined('ABSPATH')) {
     die('Direct access is not allowed.');
 }
@@ -7,6 +16,7 @@ require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/class-import.php';
 require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/class-export.php';
 require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/class-reset.php';
 require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/class-sync.php';
+require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/license-check.php';
 
 class Bricks_Remote_Template_Sync_Import_Export {
     /**
@@ -17,49 +27,54 @@ class Bricks_Remote_Template_Sync_Import_Export {
             return;
         }
 
-        $is_license_valid = true; // Replace with actual license check if implemented
+        $is_license_valid = is_client_plugin_license_valid();
         $saved_google_sheet_url = get_option('bricks_remote_sync_google_sheet_url', '');
         $message = '';
         $message_type = 'updated';
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $is_license_valid) {
-            if (isset($_POST['import_remote_templates']) && !empty($_FILES['csv_file']['tmp_name'])) {
-                self::log_message("Initiating CSV import");
-                $message = Bricks_Remote_Template_Sync_Import::import_from_csv($_FILES['csv_file']['tmp_name']);
-                self::log_message("CSV import result: $message");
-            } elseif (isset($_POST['import_remote_templates_json']) && !empty($_FILES['json_file']['tmp_name'])) {
-                self::log_message("Initiating JSON import");
-                $message = Bricks_Remote_Template_Sync_Import::import_from_json($_FILES['json_file']['tmp_name']);
-                self::log_message("JSON import result: $message");
-            } elseif (isset($_POST['save_google_sheet_url']) && !empty($_POST['google_sheet_url'])) {
-                self::log_message("Saving Google Sheet URL");
-                $save_result = Bricks_Remote_Template_Sync_Sync::save_google_sheet_url($_POST['google_sheet_url']);
-                $message = $save_result['message'];
-                $message_type = $save_result['success'] ? 'updated' : 'error';
-                self::log_message("Save Google Sheet URL result: " . ($save_result['success'] ? 'Success' : 'Failure') . " - $message");
-                $saved_google_sheet_url = get_option('bricks_remote_sync_google_sheet_url', '');
-            } elseif (isset($_POST['run_google_sheet_sync'])) {
-                self::log_message("Initiating Google Sheet sync");
-                $sync_url = get_option('bricks_remote_sync_google_sheet_url', '');
-                if (empty($sync_url)) {
-                    $message = "No Google Sheet URL saved. Please save a URL first.";
-                    $message_type = 'error';
-                } else {
-                    $result = Bricks_Remote_Template_Sync_Sync::import_from_google_sheet($sync_url);
-                    $message = $result['message'];
-                    $message_type = $result['success'] ? 'updated' : 'error';
-                    self::log_message("Google Sheet sync result: " . ($result['success'] ? 'Success' : 'Failure') . " - $message");
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!$is_license_valid) {
+                $message = 'Invalid license. Please activate your license to use this feature.';
+                $message_type = 'error';
+            } else {
+                if (isset($_POST['import_remote_templates']) && !empty($_FILES['csv_file']['tmp_name'])) {
+                    self::log_message("Initiating CSV import");
+                    $message = Bricks_Remote_Template_Sync_Import::import_from_csv($_FILES['csv_file']['tmp_name']);
+                    self::log_message("CSV import result: $message");
+                } elseif (isset($_POST['import_remote_templates_json']) && !empty($_FILES['json_file']['tmp_name'])) {
+                    self::log_message("Initiating JSON import");
+                    $message = Bricks_Remote_Template_Sync_Import::import_from_json($_FILES['json_file']['tmp_name']);
+                    self::log_message("JSON import result: $message");
+                } elseif (isset($_POST['save_google_sheet_url']) && !empty($_POST['google_sheet_url'])) {
+                    self::log_message("Saving Google Sheet URL");
+                    $save_result = Bricks_Remote_Template_Sync_Sync::save_google_sheet_url($_POST['google_sheet_url']);
+                    $message = $save_result['message'];
+                    $message_type = $save_result['success'] ? 'updated' : 'error';
+                    self::log_message("Save Google Sheet URL result: " . ($save_result['success'] ? 'Success' : 'Failure') . " - $message");
+                    $saved_google_sheet_url = get_option('bricks_remote_sync_google_sheet_url', '');
+                } elseif (isset($_POST['run_google_sheet_sync'])) {
+                    self::log_message("Initiating Google Sheet sync");
+                    $sync_url = get_option('bricks_remote_sync_google_sheet_url', '');
+                    if (empty($sync_url)) {
+                        $message = "No Google Sheet URL saved. Please save a URL first.";
+                        $message_type = 'error';
+                    } else {
+                        $result = Bricks_Remote_Template_Sync_Sync::import_from_google_sheet($sync_url);
+                        $message = $result['message'];
+                        $message_type = $result['success'] ? 'updated' : 'error';
+                        self::log_message("Google Sheet sync result: " . ($result['success'] ? 'Success' : 'Failure') . " - $message");
+                    }
+                } elseif (isset($_POST['reset_remote_templates'])) {
+                    self::log_message("Initiating template reset");
+                    $message = Bricks_Remote_Template_Sync_Reset::reset_remote_templates();
+                    self::log_message("Template reset result: $message");
+                } elseif (isset($_POST['export_to_csv'])) {
+                    self::log_message("Initiating CSV export");
+                    Bricks_Remote_Template_Sync_Export::export_to_csv();
+                } elseif (isset($_POST['export_to_json'])) {
+                    self::log_message("Initiating JSON export");
+                    Bricks_Remote_Template_Sync_Export::export_to_json();
                 }
-            } elseif (isset($_POST['reset_remote_templates'])) {
-                self::log_message("Initiating template reset");
-                $message = Bricks_Remote_Template_Sync_Reset::reset_remote_templates();
-                self::log_message("Template reset result: $message");
-            } elseif (isset($_POST['export_to_csv'])) {
-                self::log_message("Initiating CSV export");
-                Bricks_Remote_Template_Sync_Export::export_to_csv();
-            } elseif (isset($_POST['export_to_json'])) {
-                self::log_message("Initiating JSON export");
-                Bricks_Remote_Template_Sync_Export::export_to_json();
             }
 
             if (strpos($message, 'Error') !== false || strpos($message, 'Failed') !== false) {
@@ -81,6 +96,12 @@ class Bricks_Remote_Template_Sync_Import_Export {
         if (!current_user_can('manage_options')) {
             self::log_message("User does not have sufficient permissions");
             wp_send_json_error('You do not have sufficient permissions to perform this action.');
+            return;
+        }
+
+        if (!is_client_plugin_license_valid()) {
+            self::log_message("Invalid license");
+            wp_send_json_error('Invalid license. Please activate your license to use this feature.');
             return;
         }
 
@@ -111,6 +132,12 @@ class Bricks_Remote_Template_Sync_Import_Export {
         if (!current_user_can('manage_options')) {
             self::log_message("User does not have sufficient permissions");
             wp_send_json_error('You do not have sufficient permissions to perform this action.');
+            return;
+        }
+
+        if (!is_client_plugin_license_valid()) {
+            self::log_message("Invalid license");
+            wp_send_json_error('Invalid license. Please activate your license to use this feature.');
             return;
         }
 

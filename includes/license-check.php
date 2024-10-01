@@ -1,16 +1,36 @@
 <?php
+/**
+ * License Check functionality for Bricks Remote Template Sync
+ *
+ * This file contains functions that handle license checking and management
+ * for the Bricks Remote Template Sync plugin.
+ *
+ * @package Bricks_Remote_Template_Sync
+ */
+
+if (!defined('ABSPATH')) {
+    die('Direct access is not allowed.');
+}
+
+/**
+ * Schedule daily license check
+ */
 function schedule_license_check() {
     if (!wp_next_scheduled('check_license_status')) {
         wp_schedule_event(time(), 'daily', 'check_license_status');
     }
 }
 
+/**
+ * Unschedule daily license check
+ */
 function unschedule_license_check() {
     wp_clear_scheduled_hook('check_license_status');
 }
 
-add_action('check_license_status', 'perform_license_check');
-
+/**
+ * Perform license check
+ */
 function perform_license_check() {
     $license_key = get_option('client_plugin_license_key');
     $license_email = get_option('client_plugin_license_email');
@@ -22,7 +42,15 @@ function perform_license_check() {
         update_option('client_plugin_license_status', 'invalid');
     }
 }
+add_action('check_license_status', 'perform_license_check');
 
+/**
+ * Validate license with the server
+ *
+ * @param string $license_key License key to validate
+ * @param string $license_email Associated email for the license
+ * @return array Validation result
+ */
 function validate_client_plugin_license($license_key, $license_email) {
     $api_url = 'https://www.wpdesigns4u.com/wp-json/license-api/v1/validate';
     $product_id = 'bricks-remote-template-sync';
@@ -50,11 +78,19 @@ function validate_client_plugin_license($license_key, $license_email) {
     return array('valid' => false, 'message' => 'Invalid response from server. Please try again later.');
 }
 
+/**
+ * Check if the client plugin license is valid
+ *
+ * @return bool True if license is valid, false otherwise
+ */
 function is_client_plugin_license_valid() {
     $license_status = get_option('client_plugin_license_status');
     return $license_status === 'valid';
 }
 
+/**
+ * Display license notice in admin
+ */
 function client_plugin_license_notice() {
     ?>
     <div class="notice notice-error">
@@ -63,6 +99,9 @@ function client_plugin_license_notice() {
     <?php
 }
 
+/**
+ * Handle license form submission
+ */
 function handle_license_form_submission() {
     if (isset($_POST['activate_license'])) {
         $license_key = sanitize_text_field($_POST['license_key']);

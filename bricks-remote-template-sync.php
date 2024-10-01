@@ -64,3 +64,10 @@ register_deactivation_hook(__FILE__, 'bricks_remote_template_sync_deactivate');
 function bricks_remote_template_sync_deactivate() {
     // Perform any necessary cleanup on deactivation
 }
+
+function bricks_remote_sync_register_settings() {
+    register_setting('bricks_remote_sync_license', 'client_plugin_license_key');
+    register_setting('bricks_remote_sync_license', 'client_plugin_license_email');
+    register_setting('bricks_remote_sync_license', 'client_plugin_license_status');
+}
+add_action('admin_init', 'bricks_remote_sync_register_settings');
