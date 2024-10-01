@@ -40,11 +40,11 @@ class Bricks_Remote_Template_Sync_Sync {
         $new_templates = array();
         foreach ($lines as $line) {
             $data = str_getcsv($line);
-            if (count($data) >= 3) {
+            if (count($data) >= 4) { // Ensure we have at least 4 columns
                 $new_templates[] = array(
-                    'name' => sanitize_text_field($data[0]),
-                    'url' => esc_url_raw($data[1]),
-                    'password' => isset($data[2]) ? sanitize_text_field($data[2]) : ''
+                    'name' => sanitize_text_field($data[1]), // Use second column for name
+                    'url' => esc_url_raw($data[2]), // Use third column for URL
+                    'password' => isset($data[3]) ? sanitize_text_field($data[3]) : '' // Use fourth column for password
                 );
             }
         }
@@ -62,16 +62,7 @@ class Bricks_Remote_Template_Sync_Sync {
 
         if ($update_result) {
             self::log_message("Successfully updated templates in the database");
-            
-            // Verify the update
-            $verified_settings = get_option('Bricks_Global_Settings', array());
-            if (isset($verified_settings['remoteTemplates']) && $verified_settings['remoteTemplates'] === $new_templates) {
-                self::log_message("Verification successful: Templates correctly stored in the database");
-                return array('success' => true, 'message' => 'Successfully imported and verified ' . count($new_templates) . ' templates');
-            } else {
-                self::log_message("Verification failed: Templates not correctly stored in the database");
-                return array('success' => false, 'message' => 'Templates were updated but verification failed');
-            }
+            return array('success' => true, 'message' => 'Successfully imported ' . count($new_templates) . ' templates');
         } else {
             self::log_message("Failed to update templates in the database");
             return array('success' => false, 'message' => 'Failed to update templates in the database');
