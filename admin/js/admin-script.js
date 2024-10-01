@@ -12,7 +12,7 @@ jQuery(document).ready(function($) {
         var exportType = $(this).attr('id').split('-')[1];
         
         $.ajax({
-            url: ajaxurl,
+            url: bricksRemoteSync.ajaxurl,
             type: 'POST',
             data: {
                 action: 'bb_export_remote_templates_to_' + exportType,
@@ -43,7 +43,7 @@ jQuery(document).ready(function($) {
         var googleSheetUrl = $('#google_sheet_url').val();
         
         $.ajax({
-            url: ajaxurl,
+            url: bricksRemoteSync.ajaxurl,
             type: 'POST',
             data: {
                 action: 'bb_save_google_sheet_url',

@@ -9,7 +9,10 @@ class Bricks_Remote_Template_Sync_Export {
      */
     public static function export_to_csv() {
         try {
+            self::log_error('Starting CSV export');
+            
             if (!check_ajax_referer('bb_export_templates', 'nonce', false)) {
+                self::log_error('Nonce verification failed for CSV export');
                 throw new Exception('Nonce verification failed');
             }
 
@@ -33,6 +36,7 @@ class Bricks_Remote_Template_Sync_Export {
             }
 
             fclose($output);
+            self::log_error('CSV export completed successfully');
             exit;
         } catch (Exception $e) {
             self::log_error('CSV Export Error: ' . $e->getMessage());
@@ -45,7 +49,10 @@ class Bricks_Remote_Template_Sync_Export {
      */
     public static function export_to_json() {
         try {
+            self::log_error('Starting JSON export');
+            
             if (!check_ajax_referer('bb_export_templates', 'nonce', false)) {
+                self::log_error('Nonce verification failed for JSON export');
                 throw new Exception('Nonce verification failed');
             }
 
@@ -58,6 +65,7 @@ class Bricks_Remote_Template_Sync_Export {
             header('Expires: 0');
 
             echo json_encode($templates, JSON_PRETTY_PRINT);
+            self::log_error('JSON export completed successfully');
             exit;
         } catch (Exception $e) {
             self::log_error('JSON Export Error: ' . $e->getMessage());

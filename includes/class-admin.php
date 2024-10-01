@@ -48,7 +48,7 @@ class Bricks_Remote_Template_Sync_Admin {
         wp_enqueue_script('bb-admin-script', BRICKS_REMOTE_SYNC_PLUGIN_URL . 'admin/js/admin-script.js', array('jquery'), BRICKS_REMOTE_SYNC_VERSION, true);
         wp_localize_script('bb-admin-script', 'bricksRemoteSync', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('bb_save_google_sheet_url')
+            'nonce' => wp_create_nonce('bb_export_templates')
         ));
     }
 
