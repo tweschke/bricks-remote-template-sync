@@ -14,87 +14,91 @@
  * Domain Path: /languages
  */
 
+// If this file is called directly, abort.
 if (!defined('ABSPATH')) {
     die('Direct access is not allowed.');
 }
 
+// Define plugin constants
 define('BRICKS_REMOTE_SYNC_VERSION', '1.0.5');
 define('BRICKS_REMOTE_SYNC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRICKS_REMOTE_SYNC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
+// Include the required files
 require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/class-admin.php';
 require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/import-export-class.php';
 
+/**
+ * Begins execution of the plugin.
+ */
 function run_bricks_remote_template_sync() {
     $plugin_admin = new Bricks_Remote_Template_Sync_Admin();
     $plugin_admin->init();
 
+    // Add AJAX actions
     add_action('wp_ajax_bb_export_remote_templates_to_csv', array('Bricks_Remote_Template_Sync_Export', 'export_to_csv'));
     add_action('wp_ajax_bb_export_remote_templates_to_json', array('Bricks_Remote_Template_Sync_Export', 'export_to_json'));
     add_action('wp_ajax_bb_save_google_sheet_url', array('Bricks_Remote_Template_Sync_Import_Export', 'save_google_sheet_url'));
     add_action('wp_ajax_bb_run_google_sheet_sync', array('Bricks_Remote_Template_Sync_Import_Export', 'run_google_sheet_sync'));
 }
 
+// Run the plugin
 add_action('plugins_loaded', 'run_bricks_remote_template_sync');
 
+// Register activation hook
 register_activation_hook(__FILE__, 'bricks_remote_template_sync_activate');
+
+/**
+ * Plugin activation function
+ */
 function bricks_remote_template_sync_activate() {
     // Perform any necessary setup on activation
 }
 
+// Register deactivation hook
 register_deactivation_hook(__FILE__, 'bricks_remote_template_sync_deactivate');
+
+/**
+ * Plugin deactivation function
+ */
 function bricks_remote_template_sync_deactivate() {
     // Perform any necessary cleanup on deactivation
 }
+
+function bricks_remote_sync_register_settings() {
+    register_setting('bricks_remote_sync_license', 'client_plugin_license_key');
+    register_setting('bricks_remote_sync_license', 'client_plugin_license_email');
+    register_setting('bricks_remote_sync_license', 'client_plugin_license_status');
+}
+add_action('admin_init', 'bricks_remote_sync_register_settings');
+
+// New license-related functions
 
 function validate_client_plugin_license($license_key, $license_email) {
     $api_url = 'https://www.wpdesigns4u.com/wp-json/license-api/v1/validate';
     $product_id = 'bricks-remote-template-sync';
 
-    error_log('Attempting license validation - Key: ' . $license_key . ', Product ID: ' . $product_id);
-
     $response = wp_remote_post($api_url, array(
         'timeout' => 45,
         'body' => array(
             'license_key' => $license_key,
+            'license_email' => $license_email,
             'product_id' => $product_id
-            // Note: The API doesn't seem to use license_email, so we're not sending it
         )
     ));
 
     if (is_wp_error($response)) {
-        $error_message = 'Connection error: ' . $response->get_error_message();
-        error_log('License validation failed: ' . $error_message);
-        return array('valid' => false, 'message' => $error_message);
+        return array('valid' => false, 'message' => 'Connection error: ' . $response->get_error_message());
     }
 
-    $response_code = wp_remote_retrieve_response_code($response);
     $body = wp_remote_retrieve_body($response);
-
-    error_log('License validation response - Code: ' . $response_code . ', Body: ' . $body);
-
-    if ($response_code !== 200) {
-        $error_message = 'Server returned an unexpected response code: ' . $response_code;
-        error_log('License validation failed: ' . $error_message);
-        return array('valid' => false, 'message' => $error_message);
-    }
-
     $data = json_decode($body, true);
 
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        $error_message = 'Failed to parse server response: ' . json_last_error_msg();
-        error_log('License validation failed: ' . $error_message);
-        return array('valid' => false, 'message' => $error_message);
+    if (isset($data['valid'])) {
+        return $data;
     }
 
-    if (!is_array($data) || !isset($data['valid'])) {
-        $error_message = 'Unexpected server response format';
-        error_log('License validation failed: ' . $error_message);
-        return array('valid' => false, 'message' => $error_message);
-    }
-
-    error_log('License validation result: ' . print_r($data, true));
-    return $data;
+    return array('valid' => false, 'message' => 'Invalid response from server. Please try again later.');
 }
 
 function is_client_plugin_license_valid() {
@@ -133,9 +137,5 @@ function handle_license_form_submission() {
 }
 add_action('admin_init', 'handle_license_form_submission');
 
-function bricks_remote_sync_register_settings() {
-    register_setting('bricks_remote_sync_license', 'client_plugin_license_key');
-    register_setting('bricks_remote_sync_license', 'client_plugin_license_email');
-    register_setting('bricks_remote_sync_license', 'client_plugin_license_status');
-}
-add_action('admin_init', 'bricks_remote_sync_register_settings');
+// Add license check to admin notices
+add_action('admin_notices', 'client_plugin_license_notice');
