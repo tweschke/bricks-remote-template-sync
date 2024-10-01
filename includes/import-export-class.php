@@ -29,7 +29,8 @@ class Bricks_Remote_Template_Sync_Import_Export {
                 $message = Bricks_Remote_Template_Sync_Import::import_from_json($_FILES['json_file']['tmp_name']);
             } elseif (isset($_POST['import_from_google_sheet']) && !empty($_POST['google_sheet_url'])) {
                 $result = Bricks_Remote_Template_Sync_Sync::import_from_google_sheet($_POST['google_sheet_url']);
-                $message = $result ? "Templates imported successfully from Google Sheets." : "Failed to import templates from Google Sheets.";
+                $message = $result['message'];
+                $message_type = $result['success'] ? 'updated' : 'error';
             } elseif (isset($_POST['reset_remote_templates'])) {
                 $message = Bricks_Remote_Template_Sync_Reset::reset_remote_templates();
             } elseif (isset($_POST['export_to_csv'])) {
@@ -38,7 +39,7 @@ class Bricks_Remote_Template_Sync_Import_Export {
                 Bricks_Remote_Template_Sync_Export::export_to_json();
             }
 
-            if (strpos($message, 'Error') !== false) {
+            if (strpos($message, 'Error') !== false || strpos($message, 'Failed') !== false) {
                 $message_type = 'error';
             }
         }
@@ -55,10 +56,10 @@ class Bricks_Remote_Template_Sync_Import_Export {
             wp_send_json_error('You do not have sufficient permissions to perform this action.');
         }
         $result = Bricks_Remote_Template_Sync_Sync::save_google_sheet_url($_POST['google_sheet_url']);
-        if ($result) {
-            wp_send_json_success('Google Sheet URL saved successfully.');
+        if ($result['success']) {
+            wp_send_json_success($result['message']);
         } else {
-            wp_send_json_error('Failed to save Google Sheet URL.');
+            wp_send_json_error($result['message']);
         }
     }
 }

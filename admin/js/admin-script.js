@@ -37,31 +37,31 @@ jQuery(document).ready(function($) {
         });
     });
 
-    // Handle saving Google Sheet URL
-    $('#google-sheet-form').on('submit', function(e) {
-        e.preventDefault();
-        var googleSheetUrl = $('#google_sheet_url').val();
-        
-        $.ajax({
-            url: bricksRemoteSync.ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'bb_save_google_sheet_url',
-                nonce: bricksRemoteSync.nonce,
-                google_sheet_url: googleSheetUrl
-            },
-            success: function(response) {
-                if (response.success) {
-                    alert('Google Sheet URL saved successfully.');
-                } else {
-                    console.error('Failed to save Google Sheet URL:', response.data);
-                    alert('Failed to save Google Sheet URL: ' + response.data);
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('AJAX request failed:', textStatus, errorThrown);
-                alert('Failed to save Google Sheet URL. Please check the console for more information.');
+   // Handle saving Google Sheet URL
+   $('#google-sheet-form').on('submit', function(e) {
+    e.preventDefault();
+    var googleSheetUrl = $('#google_sheet_url').val();
+    
+    $.ajax({
+        url: bricksRemoteSync.ajaxurl,
+        type: 'POST',
+        data: {
+            action: 'bb_save_google_sheet_url',
+            nonce: bricksRemoteSync.nonce,
+            google_sheet_url: googleSheetUrl
+        },
+        success: function(response) {
+            if (response.success) {
+                alert('Success: ' + response.data);
+            } else {
+                console.error('Failed to save Google Sheet URL:', response.data);
+                alert('Error: ' + response.data);
             }
-        });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('AJAX request failed:', textStatus, errorThrown);
+            alert('Failed to save Google Sheet URL. Error: ' + textStatus);
+        }
     });
+});
 });
