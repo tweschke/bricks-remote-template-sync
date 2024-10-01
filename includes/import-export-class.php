@@ -37,16 +37,6 @@ class Bricks_Remote_Template_Sync_Import_Export {
                 $message = $result['message'];
                 $message_type = $result['success'] ? 'updated' : 'error';
                 self::log_message("Google Sheet import result: " . ($result['success'] ? 'Success' : 'Failure') . " - $message");
-                
-                // Additional verification step
-                if ($result['success']) {
-                    $verified_settings = get_option('Bricks_Global_Settings', array());
-                    if (!isset($verified_settings['remoteTemplates']) || empty($verified_settings['remoteTemplates'])) {
-                        $message .= " However, the templates are not visible in Bricks settings. Please check Bricks configuration.";
-                        $message_type = 'error';
-                        self::log_message("Templates not found in Bricks settings after successful import");
-                    }
-                }
             } elseif (isset($_POST['reset_remote_templates'])) {
                 self::log_message("Initiating template reset");
                 $message = Bricks_Remote_Template_Sync_Reset::reset_remote_templates();
@@ -68,7 +58,7 @@ class Bricks_Remote_Template_Sync_Import_Export {
     }
 
     /**
-     * Save Google Sheet URL via AJAX
+     * Save Google Sheet URL via AJAX and perform immediate import
      */
     public static function save_google_sheet_url() {
         self::log_message("save_google_sheet_url method called");
@@ -87,13 +77,23 @@ class Bricks_Remote_Template_Sync_Import_Export {
             return;
         }
 
-        $result = Bricks_Remote_Template_Sync_Sync::save_google_sheet_url($_POST['google_sheet_url']);
-        if ($result['success']) {
-            self::log_message("Google Sheet URL saved successfully");
-            wp_send_json_success($result['message']);
+        $url = $_POST['google_sheet_url'];
+        $save_result = Bricks_Remote_Template_Sync_Sync::save_google_sheet_url($url);
+        
+        if ($save_result['success']) {
+            self::log_message("Google Sheet URL saved successfully. Initiating import.");
+            $import_result = Bricks_Remote_Template_Sync_Sync::import_from_google_sheet($url);
+            
+            if ($import_result['success']) {
+                self::log_message("Import successful: " . $import_result['message']);
+                wp_send_json_success("URL saved and import successful: " . $import_result['message']);
+            } else {
+                self::log_message("Import failed: " . $import_result['message']);
+                wp_send_json_error("URL saved but import failed: " . $import_result['message']);
+            }
         } else {
-            self::log_message("Failed to save Google Sheet URL: " . $result['message']);
-            wp_send_json_error($result['message']);
+            self::log_message("Failed to save Google Sheet URL: " . $save_result['message']);
+            wp_send_json_error($save_result['message']);
         }
     }
 
