@@ -21,7 +21,7 @@ class Bricks_Remote_Template_Sync_Export {
             header('Content-Type: text/csv');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
 
-            $output = fopen('php://temp', 'w+');
+            $output = fopen('php://output', 'w');
             if ($output === false) {
                 throw new Exception('Failed to open output stream');
             }
@@ -32,12 +32,10 @@ class Bricks_Remote_Template_Sync_Export {
                 fputcsv($output, array($id, $template['name'], $template['url'], $template['password']));
             }
 
-            rewind($output);
-            $csv_data = stream_get_contents($output);
             fclose($output);
 
             self::log_message("CSV export completed successfully");
-            wp_send_json_success(base64_encode($csv_data));
+            exit;
         } catch (Exception $e) {
             self::log_message("CSV Export Error: " . $e->getMessage());
             wp_send_json_error('Export failed: ' . $e->getMessage());
@@ -66,8 +64,10 @@ class Bricks_Remote_Template_Sync_Export {
                 throw new Exception('Failed to encode templates to JSON');
             }
 
+            echo $json_data;
+
             self::log_message("JSON export completed successfully");
-            wp_send_json_success(base64_encode($json_data));
+            exit;
         } catch (Exception $e) {
             self::log_message("JSON Export Error: " . $e->getMessage());
             wp_send_json_error('Export failed: ' . $e->getMessage());

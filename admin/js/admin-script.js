@@ -4,34 +4,28 @@ jQuery(document).ready(function($) {
         e.preventDefault();
         var exportType = $(this).attr('id').split('-')[1];
         
-        $.ajax({
-            url: bricksRemoteSync.ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'bb_export_remote_templates_to_' + exportType,
-                nonce: bricksRemoteSync.export_nonce
-            },
-            success: function(response) {
-                console.log('Export response:', response);  // Log the entire response
-                if (response.success) {
-                    var blob = new Blob([response.data], {type: exportType === 'csv' ? 'text/csv' : 'application/json'});
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = 'bricks_remote_templates.' + exportType;
-                    link.click();
-                } else {
-                    console.error('Export failed:', response.data);
-                    alert('Export failed: ' + (response.data || 'Unknown error'));
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('AJAX request failed:', textStatus, errorThrown);
-                console.log('Response:', jqXHR.responseText);  // Log the raw response text
-                alert('Export failed. Please check the console for more information.');
-            }
+        // Create a form and submit it to trigger the download
+        var form = $('<form>', {
+            'method': 'POST',
+            'action': bricksRemoteSync.ajaxurl
         });
-    });
 
+        form.append($('<input>', {
+            'type': 'hidden',
+            'name': 'action',
+            'value': 'bb_export_remote_templates_to_' + exportType
+        }));
+
+        form.append($('<input>', {
+            'type': 'hidden',
+            'name': 'nonce',
+            'value': bricksRemoteSync.export_nonce
+        }));
+
+        $('body').append(form);
+        form.submit();
+        form.remove();
+    });
 
     // Handle saving Google Sheet URL
     $('#google-sheet-form').on('submit', function(e) {
@@ -57,6 +51,32 @@ jQuery(document).ready(function($) {
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error('AJAX request failed:', textStatus, errorThrown);
                 alert('Failed to save Google Sheet URL. Error: ' + textStatus);
+            }
+        });
+    });
+
+    // Handle running Google Sheet sync
+    $('#google-sheet-sync-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        $.ajax({
+            url: bricksRemoteSync.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'bb_run_google_sheet_sync',
+                nonce: bricksRemoteSync.sync_nonce
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert('Sync successful: ' + response.data);
+                } else {
+                    console.error('Sync failed:', response.data);
+                    alert('Sync failed: ' + response.data);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('AJAX request failed:', textStatus, errorThrown);
+                alert('Sync failed. Please check the console for more information.');
             }
         });
     });
