@@ -8,6 +8,8 @@ class Bricks_Remote_Template_Sync_Export {
      * Export templates to CSV
      */
     public static function export_to_csv() {
+        check_ajax_referer('bb_export_templates', 'nonce');
+
         $templates = self::get_remote_templates();
         $filename = 'bricks_remote_templates_' . date('Y-m-d') . '.csv';
 
@@ -22,13 +24,15 @@ class Bricks_Remote_Template_Sync_Export {
         }
 
         fclose($output);
-        exit;
+        wp_die();
     }
 
     /**
      * Export templates to JSON
      */
     public static function export_to_json() {
+        check_ajax_referer('bb_export_templates', 'nonce');
+
         $templates = self::get_remote_templates();
         $filename = 'bricks_remote_templates_' . date('Y-m-d') . '.json';
 
@@ -36,7 +40,7 @@ class Bricks_Remote_Template_Sync_Export {
         header('Content-Disposition: attachment; filename="' . $filename . '"');
 
         echo json_encode($templates, JSON_PRETTY_PRINT);
-        exit;
+        wp_die();
     }
 
     /**

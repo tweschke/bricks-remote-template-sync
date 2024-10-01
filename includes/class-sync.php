@@ -26,9 +26,9 @@ class Bricks_Remote_Template_Sync_Sync {
             $data = str_getcsv($line);
             if (count($data) >= 3) {
                 $new_templates[] = array(
-                    'name' => sanitize_text_field($data[1]),
-                    'url' => esc_url_raw($data[2]),
-                    'password' => isset($data[3]) ? sanitize_text_field($data[3]) : ''
+                    'name' => sanitize_text_field($data[0]),
+                    'url' => esc_url_raw($data[1]),
+                    'password' => isset($data[2]) ? sanitize_text_field($data[2]) : ''
                 );
             }
         }
