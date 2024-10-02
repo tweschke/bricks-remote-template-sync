@@ -17,7 +17,7 @@ class Bricks_Remote_Template_Sync_Admin {
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
-        add_action('admin_notices', array($this, 'display_license_notice'));
+        // Removed: add_action('admin_notices', array($this, 'display_license_notice'));
     }
 
     /**
@@ -34,21 +34,14 @@ class Bricks_Remote_Template_Sync_Admin {
             60
         );
 
-        add_submenu_page(
-            'bb-import-remote-templates',
-            'License',
-            'License',
-            'manage_options',
-            'bb-license',
-            array($this, 'display_license_page')
-        );
+        // Removed: License submenu page
     }
 
     /**
      * Enqueue admin-specific styles.
      */
     public function enqueue_admin_styles($hook) {
-        if (strpos($hook, 'bb-import-remote-templates') === false && strpos($hook, 'bb-license') === false) {
+        if (strpos($hook, 'bb-import-remote-templates') === false) {
             return;
         }
         wp_enqueue_style('bb-admin-styles', BRICKS_REMOTE_SYNC_PLUGIN_URL . 'admin/css/admin-style.css', array(), BRICKS_REMOTE_SYNC_VERSION);
@@ -80,22 +73,7 @@ class Bricks_Remote_Template_Sync_Admin {
         Bricks_Remote_Template_Sync_Import_Export::render_import_export_page();
     }
 
-    /**
-     * Display the license page.
-     */
-    public function display_license_page() {
-        if (!current_user_can('manage_options')) {
-            return;
-        }
-        include BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'admin/partials/license-page.php';
-    }
+    // Removed: display_license_page() method
 
-    /**
-     * Display license notice in admin.
-     */
-    public function display_license_notice() {
-        if (!is_client_plugin_license_valid() && current_user_can('manage_options')) {
-            client_plugin_license_notice();
-        }
-    }
+    // Removed: display_license_notice() method
 }

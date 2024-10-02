@@ -3,7 +3,7 @@
  * Plugin Name: Bricks Remote Template Sync
  * Plugin URI: https://wpdesigns4u.com/plugins/bricks-remote-template-sync
  * Description: A plugin to import remote templates into Bricks Builder from a CSV file, JSON file, or Google Sheets, reset all remote templates, and export to CSV or JSON.
- * Version: 1.0.5
+ * Version: 1.0.6
  * Requires at least: 5.2
  * Requires PHP: 7.2
  * Author: Thomas Weschke
@@ -20,14 +20,14 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('BRICKS_REMOTE_SYNC_VERSION', '1.0.5');
+define('BRICKS_REMOTE_SYNC_VERSION', '1.0.6');
 define('BRICKS_REMOTE_SYNC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BRICKS_REMOTE_SYNC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 // Include the required files
 require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/class-admin.php';
 require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/import-export-class.php';
-require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/license-check.php';
+// Removed: require_once BRICKS_REMOTE_SYNC_PLUGIN_DIR . 'includes/license-check.php';
 
 /**
  * Begins execution of the plugin.
@@ -42,8 +42,7 @@ function run_bricks_remote_template_sync() {
     add_action('wp_ajax_bb_save_google_sheet_url', array('Bricks_Remote_Template_Sync_Import_Export', 'save_google_sheet_url'));
     add_action('wp_ajax_bb_run_google_sheet_sync', array('Bricks_Remote_Template_Sync_Import_Export', 'run_google_sheet_sync'));
 
-    // Initialize license hooks
-    init_license_hooks();
+    // Removed: init_license_hooks();
 }
 
 // Run the plugin
