@@ -22,7 +22,11 @@
         // Handle file input change to show selected filename
         $('input[type="file"]').on('change', function() {
             var fileName = $(this).val().split('\\').pop();
-            $(this).next('.file-name').text(fileName);
+            if (fileName) {
+                $(this).next('.file-name').text(fileName);
+            } else {
+                $(this).next('.file-name').text('No file chosen');
+            }
         });
 
         // Confirm delete action
@@ -57,18 +61,12 @@
             });
         });
 
-        // Toggle advanced options
-        $('.toggle-advanced').on('click', function() {
-            $('.advanced-options').toggleClass('hidden');
-            $(this).text(function(i, text) {
-                return text === "Show Advanced Options" ? "Hide Advanced Options" : "Show Advanced Options";
-            });
-        });
+        // Initialize tooltips if tooltip plugin is available
+        if ($.fn.tooltip) {
+            $('.tooltip').tooltip();
+        }
 
-        // Initialize tooltips
-        $('.tooltip').tooltip();
-
-        // Handle tab navigation in sub UIs
+        // Handle tab navigation in sub UIs if tabs are implemented
         $('.tab-nav').on('click', 'a', function(e) {
             e.preventDefault();
             var $this = $(this);

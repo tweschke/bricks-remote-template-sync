@@ -39,30 +39,29 @@ if (!defined('ABSPATH')) {
     </div>
 
     <div id="import-ui" class="bricks-ui-container bricks-sub-ui hidden">
-        <h2>Import</h2>
-        <p>Import your Bricks Remote Template links via your .csv or .json file.</p>
-        
-        <div class="import-options">
-            <div class="import-option">
-                <h3>Import .csv</h3>
-                <form method="POST" enctype="multipart/form-data">
-                    <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
-                    <input type="file" name="csv_file" accept=".csv" required>
-                    <button type="submit" name="import_csv" class="button">Import .csv</button>
-                </form>
+        <div class="bricks-feature-card full-width">
+            <h2>Import</h2>
+            <p>Import your Bricks Remote Template links via your .csv or .json file.</p>
+            <div class="two-column-layout">
+                <div class="column">
+                    <h3>Import .csv</h3>
+                    <form method="POST" enctype="multipart/form-data">
+                        <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
+                        <input type="file" name="csv_file" accept=".csv" required>
+                        <button type="submit" name="import_csv" class="button">Import .csv</button>
+                    </form>
+                </div>
+                <div class="column">
+                    <h3>Import .json</h3>
+                    <form method="POST" enctype="multipart/form-data">
+                        <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
+                        <input type="file" name="json_file" accept=".json" required>
+                        <button type="submit" name="import_json" class="button">Import .json</button>
+                    </form>
+                </div>
             </div>
-
-            <div class="import-option">
-                <h3>Import .json</h3>
-                <form method="POST" enctype="multipart/form-data">
-                    <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
-                    <input type="file" name="json_file" accept=".json" required>
-                    <button type="submit" name="import_json" class="button">Import .json</button>
-                </form>
-            </div>
+            <button class="button return-to-main">Back to Main Menu</button>
         </div>
-
-        <button class="button return-to-main">Back to Main Menu</button>
     </div>
 
     <!-- Placeholder for other sub UIs -->
