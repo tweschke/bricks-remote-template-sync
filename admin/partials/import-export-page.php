@@ -31,50 +31,51 @@ if (!defined('ABSPATH')) {
     <?php endif; ?>
 
     <div class="bricks-grid">
-        <!-- Import Templates Card -->
-        <div class="bricks-card">
-            <svg class="bricks-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 16V17C4 18.6569 5.34315 20 7 20H17C18.6569 20 20 18.6569 20 17V16M4 16V8C4 6.34315 5.34315 5 7 5H17C18.6569 5 20 6.34315 20 8V16M4 16H20M12 12V8M12 12L9 9M12 12L15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h2><?php _e('Import Templates', 'bricks-remote-template-sync'); ?></h2>
-            <button class="button button-primary section-toggle" data-section="import-section">
-                <?php _e('Import Templates', 'bricks-remote-template-sync'); ?>
-            </button>
-        </div>
-
-        <!-- Export Templates Card -->
-        <div class="bricks-card">
-            <svg class="bricks-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 16V17C4 18.6569 5.34315 20 7 20H17C18.6569 20 20 18.6569 20 17V16M4 16V8C4 6.34315 5.34315 5 7 5H17C18.6569 5 20 6.34315 20 8V16M4 16H20M12 12V16M12 12L9 15M12 12L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h2><?php _e('Export Templates', 'bricks-remote-template-sync'); ?></h2>
-            <button class="button button-primary section-toggle" data-section="export-section">
-                <?php _e('Export Templates', 'bricks-remote-template-sync'); ?>
-            </button>
-        </div>
-
-        <!-- Sync Templates Card -->
-        <div class="bricks-card">
-            <svg class="bricks-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4V5H20V4M4 4V9M4 4H9M20 4V9M20 4H15M4 20V19H20V20M4 20V15M4 20H9M20 20V15M20 20H15M9 9H15M9 9V15M9 9H4M15 9H20M15 9V15M9 15H15M9 15H4M15 15H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h2><?php _e('Sync Templates', 'bricks-remote-template-sync'); ?></h2>
-            <button class="button button-primary section-toggle" data-section="sync-section">
-                <?php _e('Sync Templates', 'bricks-remote-template-sync'); ?>
-            </button>
-        </div>
-
-        <!-- Reset Templates Card -->
-        <div class="bricks-card">
-            <svg class="bricks-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3M21 12C21 7.02944 16.9706 3 12 3M21 12H12M12 3V12M12 12L17 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h2><?php _e('Reset Templates', 'bricks-remote-template-sync'); ?></h2>
-            <button class="button button-primary section-toggle" data-section="reset-section">
-                <?php _e('Reset Templates', 'bricks-remote-template-sync'); ?>
-            </button>
-        </div>
+    <!-- Import Templates Card -->
+    <div class="bricks-card">
+        <svg class="bricks-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3v12m0 0l-4-4m4 4l4-4m-9 5H6a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v7a2 2 0 01-2 2h-1m-6 0H7a2 2 0 002 2h6a2 2 0 002-2h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h2><?php _e('Import Templates', 'bricks-remote-template-sync'); ?></h2>
+        <button class="button button-primary section-toggle" data-section="import-section">
+            <?php _e('Import Templates', 'bricks-remote-template-sync'); ?>
+        </button>
     </div>
+
+    <!-- Export Templates Card -->
+    <div class="bricks-card">
+        <svg class="bricks-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 21v-12m0 0l-4 4m4-4l4 4m-9-5H6a2 2 0 00-2 2v7a2 2 0 002 2h1m6 0h3a2 2 0 002-2v-7a2 2 0 00-2-2h-1m-6 0H7a2 2 0 00-2 2v7a2 2 0 002 2h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h2><?php _e('Export Templates', 'bricks-remote-template-sync'); ?></h2>
+        <button class="button button-primary section-toggle" data-section="export-section">
+            <?php _e('Export Templates', 'bricks-remote-template-sync'); ?>
+        </button>
+    </div>
+
+    <!-- Sync Templates Card -->
+    <div class="bricks-card">
+        <svg class="bricks-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 4v5h5m11-5v5h-5m-6 11v-5H4m16 0v5h-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19.657 11.828a8 8 0 10-15.314 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h2><?php _e('Sync Templates', 'bricks-remote-template-sync'); ?></h2>
+        <button class="button button-primary section-toggle" data-section="sync-section">
+            <?php _e('Sync Templates', 'bricks-remote-template-sync'); ?>
+        </button>
+    </div>
+
+    <!-- Reset Templates Card -->
+    <div class="bricks-card">
+        <svg class="bricks-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 4v5h5M4 4l7 7m9-7v5h-5m5-5l-7 7m-9 9v-5h5m-5 5l7-7m9 7v-5h-5m5 5l-7-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h2><?php _e('Reset Templates', 'bricks-remote-template-sync'); ?></h2>
+        <button class="button button-primary section-toggle" data-section="reset-section">
+            <?php _e('Reset Templates', 'bricks-remote-template-sync'); ?>
+        </button>
+    </div>
+</div>
 
     <!-- Import Section -->
     <div id="import-section" class="bricks-section hidden">

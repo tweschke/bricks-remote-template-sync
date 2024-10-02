@@ -65,6 +65,23 @@ jQuery(document).ready(function($) {
         });
     });
 
+    (function($) {
+        $(document).ready(function() {
+            // Toggle sections
+            $('.section-toggle').on('click', function() {
+                var targetSection = $(this).data('section');
+                $('.bricks-section').addClass('hidden');
+                $('#' + targetSection).removeClass('hidden');
+            });
+    
+            // Close button functionality
+            $('.close-button').on('click', function() {
+                $(this).closest('.bricks-section').addClass('hidden');
+            });
+        });
+    })(jQuery);
+
+
     // Handle running Google Sheet sync
     $('#google-sheet-sync-form').on('submit', function(e) {
         e.preventDefault();
