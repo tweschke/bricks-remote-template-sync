@@ -39,55 +39,33 @@ if (!defined('ABSPATH')) {
     </div>
 
     <div id="import-ui" class="bricks-ui-container bricks-sub-ui hidden">
-        <div class="bricks-feature-card full-width">
+        <div class="bricks-feature-card">
             <h2>Import</h2>
             <p>Import your Bricks Remote Template links via your .csv or .json file.</p>
-            <div class="two-column-layout">
-                <div class="column">
-                    <h3>Import .csv</h3>
-                    <form method="POST" enctype="multipart/form-data" class="ajax-form">
-                        <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
-                        <input type="file" name="csv_file" accept=".csv" required>
-                        <button type="submit" name="import_csv" class="button">Import .csv</button>
-                    </form>
-                </div>
-                <div class="column">
-                    <h3>Import .json</h3>
-                    <form method="POST" enctype="multipart/form-data" class="ajax-form">
-                        <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
-                        <input type="file" name="json_file" accept=".json" required>
-                        <button type="submit" name="import_json" class="button">Import .json</button>
-                    </form>
-                </div>
-            </div>
+            <form method="POST" enctype="multipart/form-data" class="ajax-form">
+                <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
+                <input type="file" name="import_file" accept=".csv,.json" required>
+                <button type="submit" name="import_templates" class="button">Import Templates</button>
+            </form>
             <button class="button return-to-main">Back to Main Menu</button>
         </div>
     </div>
 
     <div id="export-ui" class="bricks-ui-container bricks-sub-ui hidden">
-        <div class="bricks-feature-card full-width">
+        <div class="bricks-feature-card">
             <h2>Export</h2>
             <p>Export your Bricks Remote Template links to a .csv or .json file.</p>
-            <div class="two-column-layout">
-                <div class="column">
-                    <form method="POST" class="ajax-form">
-                        <?php wp_nonce_field('bb_export_templates', 'bb_export_nonce'); ?>
-                        <button type="submit" name="export_csv" class="button">Export to CSV</button>
-                    </form>
-                </div>
-                <div class="column">
-                    <form method="POST" class="ajax-form">
-                        <?php wp_nonce_field('bb_export_templates', 'bb_export_nonce'); ?>
-                        <button type="submit" name="export_json" class="button">Export to JSON</button>
-                    </form>
-                </div>
-            </div>
+            <form method="POST" class="ajax-form">
+                <?php wp_nonce_field('bb_export_templates', 'bb_export_nonce'); ?>
+                <button type="submit" name="export_csv" class="button">Export to CSV</button>
+                <button type="submit" name="export_json" class="button">Export to JSON</button>
+            </form>
             <button class="button return-to-main">Back to Main Menu</button>
         </div>
     </div>
 
     <div id="google-sheet-ui" class="bricks-ui-container bricks-sub-ui hidden">
-        <div class="bricks-feature-card full-width">
+        <div class="bricks-feature-card">
             <h2>Import via Google Sheet</h2>
             <p>Import your Bricks Remote Template links via Google Sheet.</p>
             <form method="POST" class="ajax-form">
@@ -100,7 +78,7 @@ if (!defined('ABSPATH')) {
     </div>
 
     <div id="delete-ui" class="bricks-ui-container bricks-sub-ui hidden">
-        <div class="bricks-feature-card full-width">
+        <div class="bricks-feature-card">
             <h2>Delete All Templates</h2>
             <p>Are you sure you want to delete all your Bricks Remote Template links? This action cannot be undone.</p>
             <form method="POST" class="ajax-form">
