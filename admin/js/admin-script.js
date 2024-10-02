@@ -82,6 +82,23 @@ jQuery(document).ready(function($) {
     })(jQuery);
 
 
+    (function($) {
+        $(document).ready(function() {
+            // Show sub UI when a main feature button is clicked
+            $('.show-sub-ui').on('click', function() {
+                var targetUI = $(this).data('target');
+                $('#main-ui').addClass('hidden');
+                $('#' + targetUI).removeClass('hidden');
+            });
+    
+            // Return to main UI when "Back to Main Menu" is clicked
+            $('.return-to-main').on('click', function() {
+                $('.bricks-sub-ui').addClass('hidden');
+                $('#main-ui').removeClass('hidden');
+            });
+        });
+    })(jQuery);
+
     // Handle running Google Sheet sync
     $('#google-sheet-sync-form').on('submit', function(e) {
         e.preventDefault();
