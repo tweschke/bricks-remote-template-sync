@@ -27,6 +27,16 @@ jQuery(document).ready(function($) {
         form.remove();
     });
 
+    (function($) {
+        $(document).ready(function() {
+            $('.section-toggle').on('click', function() {
+                var targetSection = $(this).data('section');
+                $('.bricks-section').addClass('hidden');
+                $('#' + targetSection).removeClass('hidden');
+            });
+        });
+    })(jQuery);
+
     // Handle saving Google Sheet URL
     $('#google-sheet-form').on('submit', function(e) {
         e.preventDefault();

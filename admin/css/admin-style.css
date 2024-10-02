@@ -1,88 +1,132 @@
+/* Main container styles */
 .bricks-importer {
     background-color: #1a202c;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    padding: 20px;
 }
 
+/* Header styles */
 .bricks-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
-    background-color: #2d3748;
+    padding: 1rem 0;
+    margin-bottom: 2rem;
 }
 
 .bricks-header h1 {
     display: flex;
     align-items: center;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     margin: 0;
 }
 
 .bricks-icon {
-    margin-right: 0.5rem;
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.bricks-nav {
+    display: flex;
+    gap: 20px;
 }
 
 .bricks-nav a {
     color: #a0aec0;
     text-decoration: none;
-    margin-left: 1rem;
+    font-size: 1rem;
+    transition: color 0.3s ease;
 }
 
+.bricks-nav a:hover,
 .bricks-nav a.active {
     color: #ffffff;
 }
 
+/* Grid layout for action cards */
 .bricks-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    padding: 2rem;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
 }
 
+/* Action card styles */
 .bricks-card {
     background-color: #2d3748;
-    border-radius: 0.5rem;
+    border-radius: 8px;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bricks-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .bricks-card h2 {
     margin: 1rem 0;
+    font-size: 1.2rem;
 }
 
+.bricks-card .bricks-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1rem;
+}
+
+/* Section styles */
 .bricks-section {
     background-color: #2d3748;
-    border-radius: 0.5rem;
+    border-radius: 8px;
     padding: 1.5rem;
-    margin: 1rem 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.bricks-section.hidden {
+    display: none;
 }
 
 .bricks-section h2 {
     margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
 }
 
+/* Form element styles */
 input[type="file"],
-input[type="url"] {
+input[type="url"],
+input[type="text"] {
     width: 100%;
     padding: 0.5rem;
     margin-bottom: 1rem;
     background-color: #4a5568;
     border: 1px solid #718096;
-    border-radius: 0.25rem;
+    border-radius: 4px;
     color: #ffffff;
+    font-size: 1rem;
 }
 
+input[type="file"] {
+    padding: 0.3rem;
+}
+
+/* Button styles */
 .button {
     background-color: #4299e1;
     color: #ffffff;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
     cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
 }
 
 .button:hover {
@@ -97,6 +141,40 @@ input[type="url"] {
     background-color: #4a5568;
 }
 
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Feedback message styles */
 #feedback-message {
-    margin: 1rem 2rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.notice-success {
+    background-color: #48bb78;
+    color: #ffffff;
+}
+
+.notice-error {
+    background-color: #f56565;
+    color: #ffffff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .bricks-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bricks-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .bricks-nav {
+        margin-top: 1rem;
+    }
 }
