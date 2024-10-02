@@ -9,8 +9,20 @@
         // Show sub UI when a main feature button is clicked
         $('.show-sub-ui').on('click', function() {
             var targetUI = $(this).data('target');
-            $('#main-ui').addClass('hidden');
-            $('#' + targetUI).removeClass('hidden');
+            $('#' + targetUI).toggleClass('hidden');
+        });
+
+        $('#confirm-delete').on('click', function() {
+            if (confirm('Are you sure you want to delete all templates? This action cannot be undone.')) {
+                // Perform delete action here
+                alert('All templates have been deleted.');
+            }
+        });
+
+        $('#export-csv, #export-json').on('click', function() {
+            var format = $(this).attr('id').split('-')[1];
+            // Perform export action here
+            alert('Exporting templates to ' + format.toUpperCase() + ' format.');
         });
 
         // Return to main UI when "Back to Main Menu" is clicked

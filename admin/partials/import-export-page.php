@@ -19,10 +19,30 @@ if (!defined('ABSPATH')) {
             <button class="button show-sub-ui" data-target="import-ui">Run Import</button>
         </div>
 
+        <div id="import-ui" class="bricks-sub-ui hidden">
+            <h3>Import .csv</h3>
+            <form method="POST" enctype="multipart/form-data">
+                <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
+                <input type="file" name="csv_file" accept=".csv" required>
+                <button type="submit" name="import_csv" class="button">Import .csv</button>
+            </form>
+            <h3>Import .json</h3>
+            <form method="POST" enctype="multipart/form-data">
+                <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
+                <input type="file" name="json_file" accept=".json" required>
+                <button type="submit" name="import_json" class="button">Import .json</button>
+            </form>
+        </div>
+
         <div class="bricks-feature-card">
             <h2>Export</h2>
             <p>Export your Bricks Remote Template links to a .csv or .json file.</p>
             <button class="button show-sub-ui" data-target="export-ui">Run Export</button>
+        </div>
+
+        <div id="export-ui" class="bricks-sub-ui hidden">
+            <button class="button" id="export-csv">Export to CSV</button>
+            <button class="button" id="export-json">Export to JSON</button>
         </div>
 
         <div class="bricks-feature-card">
@@ -31,31 +51,7 @@ if (!defined('ABSPATH')) {
             <button class="button show-sub-ui" data-target="google-sheet-ui">Run Import Google Sheet</button>
         </div>
 
-        <div class="bricks-feature-card">
-            <h2>Delete All</h2>
-            <p>Delete all your Bricks Remote Template links.</p>
-            <button class="button delete-button show-sub-ui" data-target="delete-ui">Delete</button>
-        </div>
-    </div>
-
-    <div id="expanded-ui" class="bricks-feature-card expanded-ui">
-        <div id="import-ui" class="sub-ui hidden">
-            <h2>Import Options</h2>
-            <form method="POST" enctype="multipart/form-data">
-                <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
-                <input type="file" name="import_file" accept=".csv,.json" required>
-                <button type="submit" name="import_templates" class="button">Import Templates</button>
-            </form>
-        </div>
-
-        <div id="export-ui" class="sub-ui hidden">
-            <h2>Export Options</h2>
-            <button class="button" id="export-csv">Export to CSV</button>
-            <button class="button" id="export-json">Export to JSON</button>
-        </div>
-
-        <div id="google-sheet-ui" class="sub-ui hidden">
-            <h2>Google Sheet Import</h2>
+        <div id="google-sheet-ui" class="bricks-sub-ui hidden">
             <form method="POST">
                 <?php wp_nonce_field('bb_import_google_sheet', 'bb_google_sheet_nonce'); ?>
                 <input type="url" name="google_sheet_url" placeholder="Enter Google Sheet URL" required>
@@ -63,8 +59,13 @@ if (!defined('ABSPATH')) {
             </form>
         </div>
 
-        <div id="delete-ui" class="sub-ui hidden">
-            <h2>Confirm Deletion</h2>
+        <div class="bricks-feature-card">
+            <h2>Delete All</h2>
+            <p>Delete all your Bricks Remote Template links.</p>
+            <button class="button delete-button show-sub-ui" data-target="delete-ui">Delete</button>
+        </div>
+
+        <div id="delete-ui" class="bricks-sub-ui hidden">
             <p>Are you sure you want to delete all templates? This action cannot be undone.</p>
             <button id="confirm-delete" class="button delete-button">Confirm Delete All</button>
         </div>
