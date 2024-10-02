@@ -38,6 +38,35 @@ if (!defined('ABSPATH')) {
         </div>
     </div>
 
-    <!-- Sub UIs will be similar to the main UI, but with specific content for each feature -->
-    <!-- They will be hidden by default and shown when the corresponding button is clicked -->
+    <div id="expanded-ui" class="bricks-feature-card expanded-ui">
+        <div id="import-ui" class="sub-ui hidden">
+            <h2>Import Options</h2>
+            <form method="POST" enctype="multipart/form-data">
+                <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
+                <input type="file" name="import_file" accept=".csv,.json" required>
+                <button type="submit" name="import_templates" class="button">Import Templates</button>
+            </form>
+        </div>
+
+        <div id="export-ui" class="sub-ui hidden">
+            <h2>Export Options</h2>
+            <button class="button" id="export-csv">Export to CSV</button>
+            <button class="button" id="export-json">Export to JSON</button>
+        </div>
+
+        <div id="google-sheet-ui" class="sub-ui hidden">
+            <h2>Google Sheet Import</h2>
+            <form method="POST">
+                <?php wp_nonce_field('bb_import_google_sheet', 'bb_google_sheet_nonce'); ?>
+                <input type="url" name="google_sheet_url" placeholder="Enter Google Sheet URL" required>
+                <button type="submit" name="import_google_sheet" class="button">Import from Google Sheet</button>
+            </form>
+        </div>
+
+        <div id="delete-ui" class="sub-ui hidden">
+            <h2>Confirm Deletion</h2>
+            <p>Are you sure you want to delete all templates? This action cannot be undone.</p>
+            <button id="confirm-delete" class="button delete-button">Confirm Delete All</button>
+        </div>
+    </div>
 </div>
