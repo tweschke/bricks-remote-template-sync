@@ -32,10 +32,10 @@ if (!defined('ABSPATH')) {
         </div>
 
         <div class="bricks-feature-card">
-            <h2>Delete All</h2>
-            <p>Delete all your Bricks Remote Template links.</p>
-            <button class="button show-sub-ui" data-target="delete-ui">Delete</button>
-        </div>
+    <h2>Delete All</h2>
+    <p>Delete all your Bricks Remote Template links.</p>
+    <button class="button delete-button show-sub-ui" data-target="delete-ui">Delete</button>
+</div>
     </div>
 
     <div id="import-ui" class="bricks-ui-container bricks-sub-ui hidden">

@@ -1,31 +1,66 @@
+/* Main container styles */
 .bricks-remote-template-options {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
+    background-color: #FFFFFF;
 }
 
-.bricks-ui-container {
-    margin-top: 20px;
-}
-
+/* Feature card styles */
 .bricks-feature-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
+    background-color: #444444;
+    border: 1px solid #555555;
     border-radius: 4px;
     padding: 20px;
     margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    color: #FFFFFF;
 }
 
 .bricks-feature-card h2 {
     margin-top: 0;
     margin-bottom: 10px;
     font-size: 18px;
+    color: #FFFFFF;
 }
 
 .bricks-feature-card p {
     margin-bottom: 20px;
     font-size: 14px;
+    color: #FFFFFF;
+}
+
+/* Button styles */
+.button {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #75f94c;
+    color: #444444;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #68e043;
+}
+
+/* Delete button specific style */
+.button.delete-button {
+    background-color: #ec0000;
+    color: #FFFFFF;
+}
+
+.button.delete-button:hover {
+    background-color: #d40000;
+}
+
+/* Layout styles */
+.bricks-ui-container {
+    margin-top: 20px;
 }
 
 .bricks-sub-ui .full-width {
@@ -42,32 +77,33 @@
     width: 48%;
 }
 
+/* Form element styles */
+input[type="file"] {
+    margin-bottom: 10px;
+    width: 100%;
+    background-color: #555555;
+    color: #FFFFFF;
+    border: 1px solid #666666;
+    padding: 5px;
+}
+
+/* Utility classes */
 .hidden {
     display: none;
 }
 
-.button {
-    display: inline-block;
-    padding: 8px 12px;
-    background-color: #f0f0f1;
-    color: #000;
-    text-decoration: none;
-    border-radius: 4px;
-    border: 1px solid #0071a1;
-    cursor: pointer;
-    font-size: 13px;
-}
-
-.button:hover {
-    background-color: #f0f0f1;
-    border-color: #0071a1;
-}
-
-input[type="file"] {
-    margin-bottom: 10px;
-    width: 100%;
-}
-
 .return-to-main {
     margin-top: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .two-column-layout {
+        flex-direction: column;
+    }
+
+    .two-column-layout .column {
+        width: 100%;
+        margin-bottom: 20px;
+    }
 }
