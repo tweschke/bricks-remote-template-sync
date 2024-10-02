@@ -32,10 +32,10 @@ if (!defined('ABSPATH')) {
         </div>
 
         <div class="bricks-feature-card">
-    <h2>Delete All</h2>
-    <p>Delete all your Bricks Remote Template links.</p>
-    <button class="button delete-button show-sub-ui" data-target="delete-ui">Delete</button>
-</div>
+            <h2>Delete All</h2>
+            <p>Delete all your Bricks Remote Template links.</p>
+            <button class="button delete-button show-sub-ui" data-target="delete-ui">Delete</button>
+        </div>
     </div>
 
     <div id="import-ui" class="bricks-ui-container bricks-sub-ui hidden">
@@ -45,7 +45,7 @@ if (!defined('ABSPATH')) {
             <div class="two-column-layout">
                 <div class="column">
                     <h3>Import .csv</h3>
-                    <form method="POST" enctype="multipart/form-data">
+                    <form method="POST" enctype="multipart/form-data" class="ajax-form">
                         <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
                         <input type="file" name="csv_file" accept=".csv" required>
                         <button type="submit" name="import_csv" class="button">Import .csv</button>
@@ -53,7 +53,7 @@ if (!defined('ABSPATH')) {
                 </div>
                 <div class="column">
                     <h3>Import .json</h3>
-                    <form method="POST" enctype="multipart/form-data">
+                    <form method="POST" enctype="multipart/form-data" class="ajax-form">
                         <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
                         <input type="file" name="json_file" accept=".json" required>
                         <button type="submit" name="import_json" class="button">Import .json</button>
@@ -64,16 +64,50 @@ if (!defined('ABSPATH')) {
         </div>
     </div>
 
-    <!-- Placeholder for other sub UIs -->
     <div id="export-ui" class="bricks-ui-container bricks-sub-ui hidden">
-        <!-- Export UI content will go here -->
+        <div class="bricks-feature-card full-width">
+            <h2>Export</h2>
+            <p>Export your Bricks Remote Template links to a .csv or .json file.</p>
+            <div class="two-column-layout">
+                <div class="column">
+                    <form method="POST" class="ajax-form">
+                        <?php wp_nonce_field('bb_export_templates', 'bb_export_nonce'); ?>
+                        <button type="submit" name="export_csv" class="button">Export to CSV</button>
+                    </form>
+                </div>
+                <div class="column">
+                    <form method="POST" class="ajax-form">
+                        <?php wp_nonce_field('bb_export_templates', 'bb_export_nonce'); ?>
+                        <button type="submit" name="export_json" class="button">Export to JSON</button>
+                    </form>
+                </div>
+            </div>
+            <button class="button return-to-main">Back to Main Menu</button>
+        </div>
     </div>
 
     <div id="google-sheet-ui" class="bricks-ui-container bricks-sub-ui hidden">
-        <!-- Google Sheet Import UI content will go here -->
+        <div class="bricks-feature-card full-width">
+            <h2>Import via Google Sheet</h2>
+            <p>Import your Bricks Remote Template links via Google Sheet.</p>
+            <form method="POST" class="ajax-form">
+                <?php wp_nonce_field('bb_import_templates', 'bb_import_nonce'); ?>
+                <input type="url" name="google_sheet_url" placeholder="Enter Google Sheet URL" required>
+                <button type="submit" name="import_google_sheet" class="button">Import from Google Sheet</button>
+            </form>
+            <button class="button return-to-main">Back to Main Menu</button>
+        </div>
     </div>
 
     <div id="delete-ui" class="bricks-ui-container bricks-sub-ui hidden">
-        <!-- Delete UI content will go here -->
+        <div class="bricks-feature-card full-width">
+            <h2>Delete All Templates</h2>
+            <p>Are you sure you want to delete all your Bricks Remote Template links? This action cannot be undone.</p>
+            <form method="POST" class="ajax-form">
+                <?php wp_nonce_field('bb_delete_templates', 'bb_delete_nonce'); ?>
+                <button type="submit" name="delete_all_templates" class="button delete-button" id="delete-all-button">Confirm Delete All</button>
+            </form>
+            <button class="button return-to-main">Back to Main Menu</button>
+        </div>
     </div>
 </div>
