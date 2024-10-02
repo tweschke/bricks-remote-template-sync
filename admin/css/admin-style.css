@@ -1,85 +1,99 @@
-/**
- * Bricks Remote Template Sync Admin Styles
- */
-
- .bricks-importer {
-    max-width: 800px;
-    margin: 20px auto;
+.bricks-importer {
+    background-color: #1a202c;
+    color: #ffffff;
+    padding: 2rem;
+    font-family: Arial, sans-serif;
 }
 
-.bricks-importer .bricks-section {
-    background: #fff;
-    border: 1px solid #e5e5e5;
-    box-shadow: 0 1px 1px rgba(0,0,0,.04);
-    margin-bottom: 20px;
-    padding: 20px;
+.bricks-importer .wp-heading-inline {
+    font-size: 2rem;
+    margin-bottom: 2rem;
 }
 
-.bricks-importer .bricks-section h2 {
+.bricks-section {
+    background-color: #2d3748;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.bricks-section h2 {
+    font-size: 1.5rem;
     margin-top: 0;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
+    margin-bottom: 1rem;
 }
 
-.bricks-importer .bricks-section form {
-    margin-top: 15px;
+.bricks-section form {
+    display: flex;
+    flex-direction: column;
 }
 
-.bricks-importer input[type="file"],
-.bricks-importer input[type="url"] {
-    width: 100%;
-    max-width: 400px;
-    margin-bottom: 10px;
+.bricks-section input[type="file"],
+.bricks-section input[type="url"],
+.bricks-section input[type="text"] {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #4a5568;
+    background-color: #2d3748;
+    color: #ffffff;
 }
 
-.bricks-importer .button-group {
-    margin-top: 15px;
+.bricks-section button,
+.bricks-section .button {
+    background-color: #4299e1;
+    color: #ffffff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.bricks-importer .button-group .button {
-    margin-right: 10px;
+.bricks-section button:hover,
+.bricks-section .button:hover {
+    background-color: #3182ce;
 }
 
-.bricks-importer .button-secondary.bricks-reset-button {
-    color: #a00;
-    border-color: #a00;
+.bricks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
 }
 
-.bricks-importer .button-secondary.bricks-reset-button:hover {
-    color: #dc3232;
-    border-color: #dc3232;
+.bricks-card {
+    background-color: #2d3748;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
-.bricks-importer.inactive {
-    opacity: 0.5;
-    pointer-events: none;
+.bricks-card svg {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
 }
 
-.bricks-importer.inactive input,
-.bricks-importer.inactive button {
-    cursor: not-allowed !important;
+.bricks-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
 }
 
-#feedback-message {
-    padding: 10px 15px;
-    margin: 20px 0;
-    border-left: 4px solid #46b450;
-    background: #fff;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+.notice {
+    background-color: #4299e1;
+    color: #ffffff;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
 }
 
-#feedback-message.error {
-    border-left-color: #dc3232;
+.notice-error {
+    background-color: #f56565;
 }
 
-/* Responsive adjustments */
-@media screen and (max-width: 782px) {
-    .bricks-importer input[type="file"],
-    .bricks-importer input[type="url"] {
-        max-width: 100%;
-    }
-    
-    .bricks-importer .button-group .button {
-        margin-bottom: 10px;
-    }
+.notice-success {
+    background-color: #48bb78;
 }
