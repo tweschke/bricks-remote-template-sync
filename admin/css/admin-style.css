@@ -2,6 +2,7 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    background-color: #f1f1f1;
 }
 
 .bricks-ui-container {
@@ -22,10 +23,12 @@
 .bricks-feature-card h2 {
     margin-top: 0;
     margin-bottom: 10px;
+    font-size: 18px;
 }
 
 .bricks-feature-card p {
     margin-bottom: 20px;
+    font-size: 14px;
 }
 
 .bricks-sub-ui {
@@ -38,7 +41,8 @@
 
 .bricks-sub-ui h2 {
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    font-size: 18px;
 }
 
 .import-options {
@@ -58,6 +62,7 @@
 .import-option h3 {
     margin-top: 0;
     margin-bottom: 15px;
+    font-size: 16px;
 }
 
 .hidden {
@@ -66,21 +71,24 @@
 
 .button {
     display: inline-block;
-    padding: 10px 15px;
-    background-color: #0073aa;
-    color: #fff;
+    padding: 8px 12px;
+    background-color: #ddd6ce;
+    color: #000;
     text-decoration: none;
     border-radius: 4px;
     border: none;
     cursor: pointer;
+    font-size: 14px;
 }
 
-.button-secondary {
-    background-color: #f7f7f7;
-    color: #555;
-    border: 1px solid #ccc;
+.button:hover {
+    background-color: #c8beb5;
 }
 
 input[type="file"] {
     margin-bottom: 10px;
+}
+
+.return-to-main {
+    margin-top: 20px;
 }

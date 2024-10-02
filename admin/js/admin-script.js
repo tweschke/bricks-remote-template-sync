@@ -1,127 +1,81 @@
-jQuery(document).ready(function($) {
-    // Handle click events for CSV and JSON export buttons
-    $('#export-csv, #export-json').on('click', function(e) {
-        e.preventDefault();
-        var exportType = $(this).attr('id').split('-')[1];
-        
-        // Create a form and submit it to trigger the download
-        var form = $('<form>', {
-            'method': 'POST',
-            'action': bricksRemoteSync.ajaxurl
+/**
+ * Admin JavaScript for Bricks Remote Template Options
+ *
+ * This script handles all the UI interactions for the Bricks Remote Template Options page.
+ */
+
+(function($) {
+    $(document).ready(function() {
+        // Show sub UI when a main feature button is clicked
+        $('.show-sub-ui').on('click', function() {
+            var targetUI = $(this).data('target');
+            $('#main-ui').addClass('hidden');
+            $('#' + targetUI).removeClass('hidden');
         });
 
-        form.append($('<input>', {
-            'type': 'hidden',
-            'name': 'action',
-            'value': 'bb_export_remote_templates_to_' + exportType
-        }));
-
-        form.append($('<input>', {
-            'type': 'hidden',
-            'name': 'nonce',
-            'value': bricksRemoteSync.export_nonce
-        }));
-
-        $('body').append(form);
-        form.submit();
-        form.remove();
-    });
-
-    (function($) {
-        $(document).ready(function() {
-            $('.section-toggle').on('click', function() {
-                var targetSection = $(this).data('section');
-                $('.bricks-section').addClass('hidden');
-                $('#' + targetSection).removeClass('hidden');
-            });
+        // Return to main UI when "Back to Main Menu" is clicked
+        $('.return-to-main').on('click', function() {
+            $('.bricks-sub-ui').addClass('hidden');
+            $('#main-ui').removeClass('hidden');
         });
-    })(jQuery);
 
-    // Handle saving Google Sheet URL
-    $('#google-sheet-form').on('submit', function(e) {
-        e.preventDefault();
-        var googleSheetUrl = $('#google_sheet_url').val();
-        
-        $.ajax({
-            url: bricksRemoteSync.ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'bb_save_google_sheet_url',
-                nonce: bricksRemoteSync.save_url_nonce,
-                google_sheet_url: googleSheetUrl
-            },
-            success: function(response) {
-                if (response.success) {
-                    alert('Success: ' + response.data);
-                } else {
-                    console.error('Failed to save Google Sheet URL:', response.data);
-                    alert('Error: ' + response.data);
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('AJAX request failed:', textStatus, errorThrown);
-                alert('Failed to save Google Sheet URL. Error: ' + textStatus);
+        // Handle file input change to show selected filename
+        $('input[type="file"]').on('change', function() {
+            var fileName = $(this).val().split('\\').pop();
+            $(this).next('.file-name').text(fileName);
+        });
+
+        // Confirm delete action
+        $('#delete-all-button').on('click', function(e) {
+            if (!confirm('Are you sure you want to delete all templates? This action cannot be undone.')) {
+                e.preventDefault();
             }
         });
-    });
 
-    (function($) {
-        $(document).ready(function() {
-            // Toggle sections
-            $('.section-toggle').on('click', function() {
-                var targetSection = $(this).data('section');
-                $('.bricks-section').addClass('hidden');
-                $('#' + targetSection).removeClass('hidden');
-            });
-    
-            // Close button functionality
-            $('.close-button').on('click', function() {
-                $(this).closest('.bricks-section').addClass('hidden');
-            });
-        });
-    })(jQuery);
+        // Handle AJAX form submissions
+        $('.ajax-form').on('submit', function(e) {
+            e.preventDefault();
+            var $form = $(this);
+            var formData = new FormData(this);
 
-
-    (function($) {
-        $(document).ready(function() {
-            // Show sub UI when a main feature button is clicked
-            $('.show-sub-ui').on('click', function() {
-                var targetUI = $(this).data('target');
-                $('#main-ui').addClass('hidden');
-                $('#' + targetUI).removeClass('hidden');
-            });
-    
-            // Return to main UI when "Back to Main Menu" is clicked
-            $('.return-to-main').on('click', function() {
-                $('.bricks-sub-ui').addClass('hidden');
-                $('#main-ui').removeClass('hidden');
-            });
-        });
-    })(jQuery);
-
-    // Handle running Google Sheet sync
-    $('#google-sheet-sync-form').on('submit', function(e) {
-        e.preventDefault();
-        
-        $.ajax({
-            url: bricksRemoteSync.ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'bb_run_google_sheet_sync',
-                nonce: bricksRemoteSync.sync_nonce
-            },
-            success: function(response) {
-                if (response.success) {
-                    alert('Sync successful: ' + response.data);
-                } else {
-                    console.error('Sync failed:', response.data);
-                    alert('Sync failed: ' + response.data);
+            $.ajax({
+                url: ajaxurl, // WordPress AJAX URL
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.data.message);
+                    } else {
+                        alert('Error: ' + response.data.message);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred. Please try again.');
                 }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('AJAX request failed:', textStatus, errorThrown);
-                alert('Sync failed. Please check the console for more information.');
-            }
+            });
+        });
+
+        // Toggle advanced options
+        $('.toggle-advanced').on('click', function() {
+            $('.advanced-options').toggleClass('hidden');
+            $(this).text(function(i, text) {
+                return text === "Show Advanced Options" ? "Hide Advanced Options" : "Show Advanced Options";
+            });
+        });
+
+        // Initialize tooltips
+        $('.tooltip').tooltip();
+
+        // Handle tab navigation in sub UIs
+        $('.tab-nav').on('click', 'a', function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            var target = $this.attr('href');
+
+            $this.parent().addClass('active').siblings().removeClass('active');
+            $(target).removeClass('hidden').siblings('.tab-content').addClass('hidden');
         });
     });
-});
+})(jQuery);
