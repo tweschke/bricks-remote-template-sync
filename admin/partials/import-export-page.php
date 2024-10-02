@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
                 <path d="M3 9H21" stroke="currentColor" stroke-width="2"/>
                 <path d="M9 21V9" stroke="currentColor" stroke-width="2"/>
             </svg>
-            <?php echo esc_html(get_admin_page_title()); ?>
+            <?php echo esc_html__('Bricks Remote Template Options', 'bricks-remote-template-sync'); ?>
         </h1>
         <nav class="bricks-nav">
             <a href="#">Settings</a>
